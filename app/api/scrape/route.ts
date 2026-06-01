@@ -1,5 +1,15 @@
 import { NextResponse } from 'next/server';
 
+interface NewsItem {
+  id: string;
+  title: string;
+  description: string;
+  link: string;
+  source: string;
+  pubDate: string;
+  timestamp: number;
+}
+
 const RSS_FEEDS = [
   { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
   { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
@@ -11,13 +21,19 @@ const RSS_FEEDS = [
   { name: 'Anthropic', url: 'https://www.anthropic.com/index/rss.xml' },
 ];
 
-const AI_KEYWORDS = [
-  'ai', 'artificial intelligence', 'machine learning', 'deep learning',
-  'neural network', 'gpt', 'claude', 'openai', 'anthropic',
-  'chatbot', 'llm', 'large language model', 'generative ai',
+const IMPACT_KEYWORDS = [
+  'ai helps', 'ai solves', 'ai saves', 'ai improves', 'ai reduces',
+  'ai enables', 'ai assists', 'ai accelerates healing', 'ai tackles',
+  'ai addresses', 'ai advances healthcare', 'ai education', 'ai climate',
+  'ai accessibility', 'ai poverty', 'ai disease', 'ai treatment',
+  'ai diagnosis', 'ai discovery', 'ai research breakthrough',
 ];
 
-const NEGATIVE_KEYWORDS = ['no-ai', 'no ai', 'bans ai', 'blocks ai'];
+const NEGATIVE_KEYWORDS = [
+  'no-ai', 'no ai', 'bans ai', 'blocks ai', 'ai threat', 'ai danger',
+  'ai risk', 'ai concern', 'ai regulation', 'ftc', 'antitrust',
+  'ai layoffs', 'job losses', 'ai hype', 'unrealistic', 'skeptic',
+];
 
 function extractTagContent(xml: string, tag: string): string {
   const match = xml.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>|<${tag}[^>]*>([^<]*)<\\/${tag}>`));
@@ -39,7 +55,17 @@ function parseItems(xml: string) {
   return items;
 }
 
-export async function GET() {
+function isPositiveImpactStory(title: string, description: string = ''): boolean {
+  const text = `${title} ${description}`.toLowerCase();
+
+  if (NEGATIVE_KEYWORDS.some(kw => text.includes(kw))) {
+    return false;
+  }
+
+  return IMPACT_KEYWORDS.some(kw => text.includes(kw));
+}
+
+async function scrapeRSSFeeds(): Promise<NewsItem[]> {
   const results = [];
 
   for (const feed of RSS_FEEDS) {
@@ -52,24 +78,84 @@ export async function GET() {
       const items = parseItems(xml);
 
       for (const item of items.slice(0, 30)) {
-        const lowerTitle = item.title.toLowerCase();
-        if (NEGATIVE_KEYWORDS.some(kw => lowerTitle.includes(kw))) continue;
-        if (!AI_KEYWORDS.some(kw => lowerTitle.includes(kw))) continue;
-
-        results.push({
-          id: `${feed.name}::${item.link || item.title}`,
-          title: item.title.substring(0, 150),
-          description: item.description.replace(/<[^>]+>/g, '').substring(0, 300),
-          link: item.link,
-          source: feed.name,
-          pubDate: item.pubDate || new Date().toISOString(),
-          timestamp: item.pubDate ? new Date(item.pubDate).getTime() : Date.now(),
-        });
+        if (isPositiveImpactStory(item.title, item.description)) {
+          results.push({
+            id: `${feed.name}::rss::${item.link || item.title}`,
+            title: item.title.substring(0, 150),
+            description: item.description.replace(/<[^>]+>/g, '').substring(0, 300),
+            link: item.link,
+            source: feed.name,
+            pubDate: item.pubDate || new Date().toISOString(),
+            timestamp: item.pubDate ? new Date(item.pubDate).getTime() : Date.now(),
+          });
+        }
       }
     } catch (err) {
       console.error(`Failed to fetch ${feed.name}:`, err);
     }
   }
 
-  return NextResponse.json(results);
+  return results;
+}
+
+async function searchDuckDuckGo(): Promise<NewsItem[]> {
+  const queries = [
+    'ai helps solve problems',
+    'ai improves healthcare',
+    'ai tackles climate change',
+    'ai accessibility benefits',
+    'ai education impact',
+    'ai saves lives',
+    'ai reduces poverty',
+  ];
+
+  const results = [];
+
+  for (const query of queries) {
+    try {
+      const res = await fetch(
+        `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json`,
+        { next: { revalidate: 0 } }
+      );
+      const data = await res.json();
+
+      if (data.Results && Array.isArray(data.Results)) {
+        for (const result of data.Results.slice(0, 5)) {
+          if (result.FirstURL && result.Text) {
+            results.push({
+              id: `duckduckgo::search::${result.FirstURL}`,
+              title: result.Title || query,
+              description: result.Text.substring(0, 300),
+              link: result.FirstURL,
+              source: 'Web Search',
+              pubDate: new Date().toISOString(),
+              timestamp: Date.now(),
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`Failed DuckDuckGo search for "${query}":`, err);
+    }
+  }
+
+  return results;
+}
+
+export async function GET() {
+  try {
+    const [rssResults, searchResults] = await Promise.all([
+      scrapeRSSFeeds(),
+      searchDuckDuckGo(),
+    ]);
+
+    const allResults = [...rssResults, ...searchResults];
+    const unique = Array.from(new Map(allResults.map(item => [item.id, item])).values());
+    const sorted = unique.sort((a, b) => b.timestamp - a.timestamp);
+
+    return NextResponse.json(sorted);
+  } catch (error) {
+    console.error('Scraping error:', error);
+    return NextResponse.json({ success: false, error: String(error) }, { status: 500 });
+  }
 }
