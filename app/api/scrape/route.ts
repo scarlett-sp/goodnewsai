@@ -12,36 +12,76 @@ interface NewsItem {
 }
 
 const RSS_FEEDS = [
-  { name: 'Wired', url: 'https://www.wired.com/feed/rss' },
-  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
+  // Specialized scientific & research sources
+  { name: 'Science Daily - AI', url: 'https://www.sciencedaily.com/feeds/computers_math/artificial_intelligence.xml' },
   { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/' },
-  { name: 'Ars Technica', url: 'https://arstechnica.com/feed/' },
-  { name: 'FastCompany', url: 'https://www.fastcompany.com/feed/rss' },
-  { name: 'VentureBeat', url: 'https://venturebeat.com/feed/' },
-  { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
-  { name: 'Science Daily', url: 'https://www.sciencedaily.com/feeds/computers_math/artificial_intelligence.xml' },
+
+  // Company research & announcements from impact-focused orgs
   { name: 'Hugging Face', url: 'https://huggingface.co/blog/feed.xml' },
   { name: 'OpenAI', url: 'https://openai.com/blog/rss.xml' },
   { name: 'Anthropic', url: 'https://www.anthropic.com/index/rss.xml' },
 ];
 
 const IMPACT_KEYWORDS = [
+  // Problem-solving verbs
   'ai helps', 'ai solves', 'ai saves', 'ai improves', 'ai reduces',
   'ai enables', 'ai assists', 'ai accelerates', 'ai tackles', 'ai addresses',
-  'ai advances healthcare', 'ai diagnosis', 'ai treatment', 'ai disease',
-  'ai education', 'ai climate', 'ai accessibility', 'ai poverty',
-  'ai discovery', 'ai research breakthrough', 'ai deployed', 'ai practical',
-  'ai works', 'ai useful', 'ai outperforms', 'ai real-world', 'ai actually',
-  'ai accelerates drug', 'ai speeds up', 'ai automates', 'ai efficiency',
+  'ai detects', 'ai diagnoses', 'ai discovers', 'ai develops',
+
+  // Medical & healthcare
+  'ai diagnosis', 'ai treatment', 'ai disease', 'ai cancer', 'ai healthcare',
+  'ai advances healthcare', 'ai medical breakthrough', 'ai patient',
+  'ai drug discovery', 'ai pharmaceutical', 'ai cure',
+
+  // Research & validation
+  'ai research breakthrough', 'ai landmark study', 'ai validation study',
+  'ai scientific discovery', 'ai breakthrough research',
+
+  // Deployment & practical use
+  'ai deployed', 'ai practical', 'ai works', 'ai useful', 'ai real-world',
+  'ai actually', 'ai deployed', 'ai launched',
+
+  // Impact areas
+  'ai climate', 'ai renewable', 'ai accessibility', 'ai poverty',
+  'ai education', 'ai learning', 'ai disaster', 'ai humanitarian',
+  'ai agriculture', 'ai farming', 'ai community', 'ai civic',
+
+  // Performance & efficiency
+  'ai outperforms', 'ai speeds up', 'ai automates', 'ai efficiency',
+  'ai accelerates drug',
+
+  // Specific outcomes
+  'first time', 'detect early', 'up to', 'faster than', 'beat', 'outperform',
 ];
 
 const NEGATIVE_KEYWORDS = [
+  // Restrictions & criticism
   'no-ai', 'no ai', 'bans ai', 'blocks ai', 'ai threat', 'ai danger',
   'ai risk', 'ai concern', 'ai regulation', 'ftc', 'antitrust',
-  'ai layoffs', 'job losses', 'ai hype', 'unrealistic', 'skeptic',
-  'ai psychosis', 'data center secrecy', 'vc thinks', 'vc debate',
-  'venture capital raises', 'venture capital invests',
-  'ai pendant', 'groupthink', 'debate over ai', 'ai commentary',
+
+  // Job losses & workplace concerns
+  'ai layoffs', 'job losses', 'job displacement', 'workers displaced',
+
+  // Hype & speculation
+  'ai hype', 'unrealistic', 'skeptic', 'overhyped', 'allegedly', 'reportedly',
+  'could be', 'may be developing', 'is reportedly',
+
+  // Mental health concerns & criticism
+  'ai psychosis', 'ai addiction', 'mental health concern', 'psychological impact',
+
+  // Negative angles
+  'data center secrecy', 'vc thinks', 'vc debate', 'debate over ai', 'ai commentary',
+  'ai criticism', 'ethical concerns', 'bias concerns',
+
+  // Business/wealth angles
+  'billionaire', 'minted wealth', 'new rich', 'wealth gap', 'inequality',
+  'venture capital raises', 'venture capital invests', 'startup raises', 'funding round',
+
+  // Product launches & gadgets
+  'product launch', 'new gadget', 'announces', 'releases new',
+
+  // Misc noise
+  'ai pendant', 'groupthink', 'pokemon', 'gaming',
 ];
 
 const TAG_KEYWORDS = {
@@ -88,8 +128,8 @@ function isPositiveImpactStory(title: string, description: string = ''): boolean
     return false;
   }
 
-  // Accept everything else from curated RSS feeds
-  return true;
+  // Require positive impact keywords
+  return IMPACT_KEYWORDS.some(kw => text.includes(kw));
 }
 
 function assignTags(title: string, description: string = ''): string[] {
@@ -145,13 +185,16 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
 
 async function searchDuckDuckGo(): Promise<NewsItem[]> {
   const queries = [
-    'ai helps solve problems',
-    'ai improves healthcare',
-    'ai tackles climate change',
-    'ai accessibility benefits',
-    'ai education impact',
-    'ai saves lives',
-    'ai reduces poverty',
+    'AI diagnosis detection cancer treatment breakthrough',
+    'AI healthcare medical research drug discovery',
+    'AI climate renewable energy sustainability solution',
+    'AI accessibility disability assistance technology',
+    'AI education learning impact students',
+    'AI scientific breakthrough research validation study',
+    'AI malaria tuberculosis disease prevention',
+    'AI community civic solution infrastructure',
+    'AI disaster response humanitarian aid',
+    'AI agriculture farming food security',
   ];
 
   const results = [];
