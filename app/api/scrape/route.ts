@@ -1,25 +1,62 @@
 import { NextResponse } from 'next/server';
 
+interface NewsItem {
+  id: string;
+  title: string;
+  description: string;
+  link: string;
+  source: string;
+  pubDate: string;
+  timestamp: number;
+}
+
+const RSS_FEEDS = [
+  { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
+  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
+  { name: 'The Wire', url: 'https://thewire.in/feed' },
+];
+
+const AI_KEYWORDS = ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural', 'algorithm', 'gpt', 'claude', 'openai', 'anthropic', 'chatbot', 'transformer', 'llm'];
+const NEGATIVE_KEYWORDS = ['no-ai', 'no ai', 'concerns about ai', 'risks of ai'];
+
+function parseXMLItems(xml: string): Array<{title?: string; link?: string; pubDate?: string; description?: string}> {
+  const items = [];
+  const itemRegex = /<item[^>]*>[\s\S]*?<\/item>/g;
+  const matches = xml.match(itemRegex) || [];
+
+  for (const match of matches) {
+    const title = match.match(/<title[^>]*>([^<]*)<\/title>/)?.[1] || '';
+    const link = match.match(/<link[^>]*>([^<]*)<\/link>/)?.[1] || '';
+    const pubDate = match.match(/<pubDate[^>]*>([^<]*)<\/pubDate>/)?.[1] || '';
+    const description = match.match(/<description[^>]*>([^<]*)<\/description>/)?.[1] || '';
+
+    if (title) {
+      items.push({ title: decodeHTMLEntities(title), link, pubDate, description: decodeHTMLEntities(description) });
+    }
+  }
+
+  return items;
+}
+
+function decodeHTMLEntities(text: string): string {
+  const entities: Record<string, string> = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'",
+  };
+  return text.replace(/&[^;]+;/g, (match) => entities[match] || match);
+}
+
 export async function GET() {
   try {
-    // Import only when needed to avoid build issues
-    const Parser = (await import('rss-parser')).default;
     const fs = await import('fs/promises');
     const path = await import('path');
 
-    const parser = new Parser();
     const DATA_FILE = path.join(process.cwd(), '.data', 'news.json');
 
-    const RSS_FEEDS = [
-      { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
-      { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
-      { name: 'The Wire', url: 'https://thewire.in/feed' },
-    ];
-
-    const AI_KEYWORDS = ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural', 'algorithm', 'gpt', 'claude', 'openai', 'anthropic', 'chatbot', 'transformer', 'llm', 'large language model'];
-    const NEGATIVE_KEYWORDS = ['no-ai', 'no ai', 'concerns about ai', 'risks of ai'];
-
-    let existing = [];
+    let existing: NewsItem[] = [];
     try {
       const data = await fs.readFile(DATA_FILE, 'utf-8');
       existing = JSON.parse(data);
@@ -27,12 +64,15 @@ export async function GET() {
       // File doesn't exist yet
     }
 
-    const allItems = [];
+    const allItems: NewsItem[] = [];
 
     for (const feed of RSS_FEEDS) {
       try {
-        const parsedFeed = await parser.parseURL(feed.url);
-        for (const item of parsedFeed.items.slice(0, 30)) {
+        const response = await fetch(feed.url, { cache: 'no-store' });
+        const xml = await response.text();
+        const items = parseXMLItems(xml);
+
+        for (const item of items.slice(0, 30)) {
           const title = item.title || '';
           const lowerTitle = title.toLowerCase();
 
@@ -40,13 +80,13 @@ export async function GET() {
           if (!AI_KEYWORDS.some(kw => lowerTitle.includes(kw))) continue;
 
           allItems.push({
-            id: `${feed.name}-${item.isoDate || Date.now()}`,
+            id: `${feed.name}-${item.pubDate || Date.now()}`,
             title: title.substring(0, 150),
-            description: (item.contentSnippet || '').substring(0, 300),
+            description: (item.description || '').substring(0, 300),
             link: item.link || '',
             source: feed.name,
-            pubDate: item.isoDate || new Date().toISOString(),
-            timestamp: new Date(item.isoDate || Date.now()).getTime(),
+            pubDate: item.pubDate || new Date().toISOString(),
+            timestamp: new Date(item.pubDate || Date.now()).getTime(),
           });
         }
       } catch (e) {
