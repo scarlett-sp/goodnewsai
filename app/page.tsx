@@ -88,10 +88,10 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                [untitled]
+                Good News AI
               </h1>
               <p className="text-slate-400 text-sm sm:text-base mt-1">
-                Positive developments in AI
+                Positive developments in artificial intelligence
               </p>
             </div>
             <button
