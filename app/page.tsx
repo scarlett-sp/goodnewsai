@@ -10,7 +10,35 @@ interface NewsItem {
   link: string;
   source: string;
   pubDate: string;
-  imageUrl?: string;
+  timestamp: number;
+}
+
+const STORAGE_KEY = 'goodnewsai_items';
+const TWO_WEEKS = 14 * 24 * 60 * 60 * 1000;
+
+function loadStored(): NewsItem[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const items: NewsItem[] = JSON.parse(raw);
+    const cutoff = Date.now() - TWO_WEEKS;
+    return items.filter(i => i.timestamp > cutoff);
+  } catch {
+    return [];
+  }
+}
+
+function mergeAndStore(existing: NewsItem[], fresh: NewsItem[]): NewsItem[] {
+  const map = new Map(existing.map(i => [i.id, i]));
+  for (const item of fresh) map.set(item.id, item);
+  const cutoff = Date.now() - TWO_WEEKS;
+  const merged = Array.from(map.values())
+    .filter(i => i.timestamp > cutoff)
+    .sort((a, b) => b.timestamp - a.timestamp);
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+  } catch {}
+  return merged;
 }
 
 export default function Home() {
@@ -20,14 +48,21 @@ export default function Home() {
   const [lastUpdate, setLastUpdate] = useState<string>('');
 
   useEffect(() => {
-    fetchNews();
+    const stored = loadStored();
+    if (stored.length > 0) {
+      setNews(stored);
+      setLoading(false);
+    }
+    // Always fetch fresh on load
+    doRefresh(stored);
   }, []);
 
-  const fetchNews = async () => {
+  const doRefresh = async (current: NewsItem[]) => {
     try {
-      const response = await fetch('/api/news');
-      const data = await response.json();
-      setNews(data);
+      const response = await fetch('/api/scrape');
+      const fresh: NewsItem[] = await response.json();
+      const merged = mergeAndStore(current, fresh);
+      setNews(merged);
       setLastUpdate(new Date().toLocaleString());
     } catch (error) {
       console.error('Error fetching news:', error);
@@ -39,10 +74,7 @@ export default function Home() {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      await fetch('/api/scrape');
-      await fetchNews();
-    } catch (error) {
-      console.error('Error refreshing:', error);
+      await doRefresh(news);
     } finally {
       setRefreshing(false);
     }
