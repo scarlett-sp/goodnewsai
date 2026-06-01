@@ -4,7 +4,7 @@ import { join } from 'path';
 
 export async function GET() {
   try {
-    const dataFile = join(process.cwd(), 'public', 'data.json');
+    const dataFile = join(process.cwd(), '.data', 'news.json');
     const data = await readFile(dataFile, 'utf-8');
     const items = JSON.parse(data);
     return NextResponse.json(items);

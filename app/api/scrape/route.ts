@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Parser from 'rss-parser';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
 interface NewsItem {
@@ -15,7 +15,7 @@ interface NewsItem {
 }
 
 const parser = new Parser();
-const DATA_FILE = join(process.cwd(), 'public', 'data.json');
+const DATA_FILE = join(process.cwd(), '.data', 'news.json');
 
 const RSS_FEEDS = [
   { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
@@ -58,6 +58,11 @@ async function loadExistingData(): Promise<NewsItem[]> {
 }
 
 async function saveData(items: NewsItem[]): Promise<void> {
+  try {
+    await mkdir(join(process.cwd(), '.data'), { recursive: true });
+  } catch {
+    // Directory might already exist
+  }
   const twoWeeksAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
   const filtered = items.filter(item => item.timestamp > twoWeeksAgo);
   const sorted = filtered.sort((a, b) => b.timestamp - a.timestamp);
