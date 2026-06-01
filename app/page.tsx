@@ -16,14 +16,14 @@ interface NewsItem {
 }
 
 const STORAGE_KEY = 'goodnewsai_items';
-const TWO_WEEKS = 14 * 24 * 60 * 60 * 1000;
+const SIX_MONTHS = 180 * 24 * 60 * 60 * 1000;
 
 function loadStored(): NewsItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const items: NewsItem[] = JSON.parse(raw);
-    const cutoff = Date.now() - TWO_WEEKS;
+    const cutoff = Date.now() - SIX_MONTHS;
     return items.filter(i => i.timestamp > cutoff);
   } catch {
     return [];
@@ -33,7 +33,7 @@ function loadStored(): NewsItem[] {
 function mergeAndStore(existing: NewsItem[], fresh: NewsItem[]): NewsItem[] {
   const map = new Map(existing.map(i => [i.id, i]));
   for (const item of fresh) map.set(item.id, item);
-  const cutoff = Date.now() - TWO_WEEKS;
+  const cutoff = Date.now() - SIX_MONTHS;
   const merged = Array.from(map.values())
     .filter(i => i.timestamp > cutoff)
     .sort((a, b) => b.timestamp - a.timestamp);
