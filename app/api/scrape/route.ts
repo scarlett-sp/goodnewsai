@@ -4,6 +4,11 @@ const RSS_FEEDS = [
   { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
   { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
   { name: 'The Wire', url: 'https://thewire.in/feed' },
+  { name: 'Wired', url: 'https://www.wired.com/feed/rss' },
+  { name: 'VentureBeat', url: 'https://venturebeat.com/feed/' },
+  { name: 'Hugging Face', url: 'https://huggingface.co/blog/feed.xml' },
+  { name: 'OpenAI', url: 'https://openai.com/blog/rss.xml' },
+  { name: 'Anthropic', url: 'https://www.anthropic.com/index/rss.xml' },
 ];
 
 const AI_KEYWORDS = [
