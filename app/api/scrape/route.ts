@@ -11,11 +11,14 @@ interface NewsItem {
 }
 
 const RSS_FEEDS = [
-  { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
-  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
-  { name: 'The Wire', url: 'https://thewire.in/feed' },
   { name: 'Wired', url: 'https://www.wired.com/feed/rss' },
+  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
+  { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/' },
+  { name: 'Ars Technica', url: 'https://arstechnica.com/feed/' },
+  { name: 'FastCompany', url: 'https://www.fastcompany.com/feed/rss' },
   { name: 'VentureBeat', url: 'https://venturebeat.com/feed/' },
+  { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
+  { name: 'Science Daily', url: 'https://www.sciencedaily.com/feeds/computers_math/artificial_intelligence.xml' },
   { name: 'Hugging Face', url: 'https://huggingface.co/blog/feed.xml' },
   { name: 'OpenAI', url: 'https://openai.com/blog/rss.xml' },
   { name: 'Anthropic', url: 'https://www.anthropic.com/index/rss.xml' },
@@ -23,16 +26,21 @@ const RSS_FEEDS = [
 
 const IMPACT_KEYWORDS = [
   'ai helps', 'ai solves', 'ai saves', 'ai improves', 'ai reduces',
-  'ai enables', 'ai assists', 'ai accelerates healing', 'ai tackles',
-  'ai addresses', 'ai advances healthcare', 'ai education', 'ai climate',
-  'ai accessibility', 'ai poverty', 'ai disease', 'ai treatment',
-  'ai diagnosis', 'ai discovery', 'ai research breakthrough',
+  'ai enables', 'ai assists', 'ai accelerates', 'ai tackles', 'ai addresses',
+  'ai advances healthcare', 'ai diagnosis', 'ai treatment', 'ai disease',
+  'ai education', 'ai climate', 'ai accessibility', 'ai poverty',
+  'ai discovery', 'ai research breakthrough', 'ai deployed', 'ai practical',
+  'ai works', 'ai useful', 'ai outperforms', 'ai real-world', 'ai actually',
+  'ai accelerates drug', 'ai speeds up', 'ai automates', 'ai efficiency',
 ];
 
 const NEGATIVE_KEYWORDS = [
   'no-ai', 'no ai', 'bans ai', 'blocks ai', 'ai threat', 'ai danger',
   'ai risk', 'ai concern', 'ai regulation', 'ftc', 'antitrust',
   'ai layoffs', 'job losses', 'ai hype', 'unrealistic', 'skeptic',
+  'ai psychosis', 'data center secrecy', 'vc thinks', 'vc debate',
+  'startup raises', 'funding round', 'venture capital', 'agreement with',
+  'ai pendant', 'groupthink', 'debate over ai', 'ai commentary',
 ];
 
 function extractTagContent(xml: string, tag: string): string {
@@ -77,8 +85,12 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
       const xml = await res.text();
       const items = parseItems(xml);
 
-      for (const item of items.slice(0, 30)) {
+      let sourceCount = 0;
+      const maxPerSource = 5;
+      for (const item of items) {
+        if (sourceCount >= maxPerSource) break;
         if (isPositiveImpactStory(item.title, item.description)) {
+          sourceCount++;
           results.push({
             id: `${feed.name}::rss::${item.link || item.title}`,
             title: item.title.substring(0, 150),
