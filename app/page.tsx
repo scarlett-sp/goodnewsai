@@ -82,23 +82,23 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#221E1C] via-[#2A2520] to-[#221E1C]">
+    <main className="min-h-screen bg-gradient-to-br from-[#C3E3F4] via-[#FF8E7E] to-[#FFA0B4]">
       {/* Header */}
-      <div className="border-b border-[#CABFB6]/20 backdrop-blur-sm sticky top-0 z-10">
+      <div className="border-b border-[#FF8E7E]/20 backdrop-blur-md bg-white/10 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-bold text-[#221E1C] tracking-tight">
                 Good News AI
               </h1>
-              <p className="text-[#CABFB6] text-sm sm:text-base mt-1">
+              <p className="text-[#221E1C]/70 text-sm sm:text-base mt-1">
                 Positive developments in artificial intelligence
               </p>
             </div>
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#FF8E7E] to-[#3FA8F0] text-white font-medium hover:from-[#FFB89C] hover:to-[#5AB8F5] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 w-full sm:w-auto justify-center"
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#FF8E7E] to-[#FFA0B4] text-white font-medium hover:from-[#FFB89C] hover:to-[#FFB5C5] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 w-full sm:w-auto justify-center"
             >
               <svg
                 className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
@@ -117,7 +117,7 @@ export default function Home() {
             </button>
           </div>
           {lastUpdate && (
-            <p className="text-xs sm:text-sm text-[#CABFB6]/60 mt-3">
+            <p className="text-xs sm:text-sm text-[#221E1C]/60 mt-3">
               Last updated: {lastUpdate}
             </p>
           )}
@@ -128,14 +128,14 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="text-[#CABFB6]">
-              <div className="w-8 h-8 border-2 border-[#CABFB6]/30 border-t-[#FF8E7E] rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="text-[#221E1C]">
+              <div className="w-8 h-8 border-2 border-[#221E1C]/30 border-t-[#FF8E7E] rounded-full animate-spin mx-auto mb-4"></div>
               Loading stories...
             </div>
           </div>
         ) : news.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-[#CABFB6]">No stories yet. Click refresh to get started.</p>
+            <p className="text-[#221E1C]">No stories yet. Click refresh to get started.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
