@@ -11,6 +11,7 @@ interface NewsItem {
   source: string;
   pubDate: string;
   timestamp: number;
+  tags: string[];
 }
 
 const STORAGE_KEY = 'goodnewsai_items';

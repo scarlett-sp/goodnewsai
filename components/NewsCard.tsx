@@ -7,6 +7,7 @@ interface NewsCardProps {
     source: string;
     pubDate: string;
     imageUrl?: string;
+    tags?: string[];
   };
 }
 
@@ -53,6 +54,16 @@ export default function NewsCard({ item }: NewsCardProps) {
         <p className="text-xs sm:text-sm text-[#CABFB6]/70 line-clamp-3 flex-grow">
           {item.description}
         </p>
+
+        {item.tags && item.tags.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1">
+            {item.tags.map((tag) => (
+              <span key={tag} className="inline-block px-2 py-0.5 bg-[#CABFB6]/15 text-[#CABFB6] text-xs rounded border border-[#CABFB6]/20">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="mt-3 pt-3 border-t border-[#CABFB6]/20 flex items-center gap-1 text-[#3FA8F0] group-hover:text-[#FF8E7E] text-xs font-medium">
           Read more
