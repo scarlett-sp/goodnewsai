@@ -12,20 +12,20 @@ interface NewsItem {
 }
 
 const RSS_FEEDS = [
-  // Research & science
+  // Research & impact-focused
   { name: 'Science Daily - AI', url: 'https://www.sciencedaily.com/feeds/computers_math/artificial_intelligence.xml' },
-  { name: 'Nature News', url: 'https://www.nature.com/news/index.rss' },
-
-  // News & mainstream
-  { name: 'BBC News - Science', url: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml' },
-  { name: 'Medical News Today', url: 'https://feeds.medicalnewstoday.com/rss-full.xml' },
-  { name: 'Reuters Science', url: 'https://www.reutersagency.com/feed/?taxonomy=best-topics&output=rss' },
-
-  // Tech & innovation
   { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/' },
 
-  // Healthcare
-  { name: 'Health News Review', url: 'https://www.healthnewsreview.org/feed/' },
+  // Mainstream news with tech/innovation coverage
+  { name: 'BBC News - Science', url: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml' },
+  { name: 'Forbes - Technology', url: 'https://www.forbes.com/technology/feed2/' },
+  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
+
+  // Healthcare & wellness
+  { name: 'Medical News Today', url: 'https://feeds.medicalnewstoday.com/rss-full.xml' },
+
+  // Innovation for social good
+  { name: 'Wired - Tech', url: 'https://www.wired.com/feed/rss' },
 ];
 
 const IMPACT_KEYWORDS = [
@@ -135,15 +135,21 @@ function isPositiveImpactStory(title: string, description: string = ''): boolean
     return false;
   }
 
-  // SECONDARY FILTER: Must mention AI and be about a relevant topic
-  if (!text.includes('ai') && !text.includes('artificial intelligence')) {
-    return false;
-  }
+  // SECONDARY FILTER: Be about impact/solutions in relevant areas
+  // Allows articles that focus on the problem being solved rather than tech announcement
+  const impactAreas = [
+    // Healthcare
+    'health', 'medical', 'disease', 'treatment', 'patient', 'diagnosis', 'research',
+    // Community & social
+    'community', 'homeless', 'poverty', 'elder', 'elderly', 'aging', 'disability', 'access', 'education', 'learning',
+    // Environment & agriculture
+    'climate', 'sustainability', 'renewable', 'agriculture', 'farming', 'food', 'water',
+    // Specific solutions
+    'breakthrough', 'innovation', 'solution', 'helps', 'support', 'assist', 'improve',
+    'companion', 'care', 'shelter', 'rescue', 'aid', 'crisis', 'disaster', 'relief'
+  ];
 
-  // If it has AI + relevant topic + no negative keywords, include it
-  // Trust that the RSS feeds are good sources
-  const relevantTopics = ['health', 'medical', 'disease', 'treatment', 'research', 'innovation', 'climate', 'sustainability', 'education', 'learning', 'accessibility', 'community', 'food', 'agriculture', 'breakthrough'];
-  return relevantTopics.some(topic => text.includes(topic));
+  return impactAreas.some(area => text.includes(area));
 }
 
 function assignTags(title: string, description: string = ''): string[] {
