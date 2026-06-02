@@ -12,8 +12,20 @@ interface NewsItem {
 }
 
 const RSS_FEEDS = [
-  // Minimal RSS feeds - focus on research & breakthroughs
+  // Research & science
   { name: 'Science Daily - AI', url: 'https://www.sciencedaily.com/feeds/computers_math/artificial_intelligence.xml' },
+  { name: 'Nature News', url: 'https://www.nature.com/news/index.rss' },
+
+  // News & mainstream
+  { name: 'BBC News - Science', url: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml' },
+  { name: 'Medical News Today', url: 'https://feeds.medicalnewstoday.com/rss-full.xml' },
+  { name: 'Reuters Science', url: 'https://www.reutersagency.com/feed/?taxonomy=best-topics&output=rss' },
+
+  // Tech & innovation
+  { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/' },
+
+  // Healthcare
+  { name: 'Health News Review', url: 'https://www.healthnewsreview.org/feed/' },
 ];
 
 const IMPACT_KEYWORDS = [
@@ -118,24 +130,13 @@ function parseItems(xml: string) {
 function isPositiveImpactStory(title: string, description: string = ''): boolean {
   const text = `${title} ${description}`.toLowerCase();
 
-  // Filter out explicitly negative stories - this is our main filter
+  // Filter out explicitly negative stories
   if (NEGATIVE_KEYWORDS.some(kw => text.includes(kw))) {
     return false;
   }
 
-  // For positive matching: require either multiple impact keywords OR specific phrases
-  const hasMultipleKeywords = (IMPACT_KEYWORDS.filter(kw => text.includes(kw)).length >= 2);
-  const hasSpecificPhrase = text.includes('ai') && (
-    text.includes('health') || text.includes('medical') || text.includes('disease') ||
-    text.includes('treatment') || text.includes('cure') || text.includes('diagnosis') ||
-    text.includes('climate') || text.includes('renewable') || text.includes('sustainability') ||
-    text.includes('education') || text.includes('learning') || text.includes('accessibility') ||
-    text.includes('disability') || text.includes('community') || text.includes('civic') ||
-    text.includes('humanitarian') || text.includes('disaster') || text.includes('agriculture') ||
-    text.includes('breakthrough') || text.includes('research') || text.includes('innovation')
-  );
-
-  return hasMultipleKeywords || hasSpecificPhrase;
+  // Require positive impact keywords
+  return IMPACT_KEYWORDS.some(kw => text.includes(kw));
 }
 
 function assignTags(title: string, description: string = ''): string[] {
@@ -190,119 +191,8 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
 }
 
 async function searchDuckDuckGo(): Promise<NewsItem[]> {
-  const queries = [
-    // Healthcare - cancer & disease detection
-    'AI cancer detection early diagnosis',
-    'AI pancreatic cancer detection',
-    'AI disease diagnosis medical',
-    'AI medical imaging breakthrough',
-
-    // Healthcare - treatment & outcomes
-    'AI drug discovery pharmaceutical',
-    'AI personalized medicine treatment',
-    'AI patient outcome improvement',
-    'AI healthcare innovation',
-    'AI Alzheimers diabetes detection',
-
-    // Climate & environment solutions
-    'AI climate change solution',
-    'AI renewable energy optimization',
-    'AI carbon emissions reduction',
-    'AI environmental conservation',
-
-    // Accessibility & disability technology
-    'AI assistive technology disability',
-    'AI blind vision restoration',
-    'AI deaf communication',
-    'AI accessibility inclusive',
-
-    // Education & learning
-    'AI personalized learning education',
-    'AI education access equity',
-    'AI literacy student improvement',
-    'AI special education support',
-
-    // Community & civic impact
-    'AI civic tech solution',
-    'AI city planning improvement',
-    'AI public service innovation',
-    'AI community safety',
-
-    // Disaster & humanitarian
-    'AI disaster prediction response',
-    'AI humanitarian aid emergency',
-    'AI natural disaster forecasting',
-    'AI refugee crisis assistance',
-
-    // Agriculture & food security
-    'AI agriculture crop yield',
-    'AI food security sustainability',
-    'AI farming productivity innovation',
-
-    // General positive impact & research
-    'AI medical breakthrough research',
-    'AI for good social impact',
-    'AI scientific discovery',
-    'AI healthcare advancement',
-    'AI helps people benefit',
-    'AI innovation positive outcomes',
-    'AI innovation solving problems',
-    'AI transformation society',
-    'AI improvement human life',
-    'AI research validation study',
-
-    // Specific institutional sources
-    'Mayo Clinic AI cancer detection',
-    'Harvard AI research breakthrough',
-    'Stanford AI medical',
-    'BBC AI healthcare breakthrough',
-    'TIME magazine AI positive',
-  ];
-
-  const results = [];
-  const seenDomains = new Set<string>();
-
-  for (const query of queries) {
-    try {
-      const res = await fetch(
-        `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json`,
-        { next: { revalidate: 0 } }
-      );
-      const data = await res.json();
-
-      if (data.Results && Array.isArray(data.Results)) {
-        for (const result of data.Results.slice(0, 15)) {
-          if (result.FirstURL && result.Text) {
-            try {
-              const url = new URL(result.FirstURL);
-              const domain = url.hostname.replace('www.', '');
-
-              // Only add one article per domain
-              if (!seenDomains.has(domain)) {
-                seenDomains.add(domain);
-                results.push({
-                  id: `duckduckgo::search::${result.FirstURL}`,
-                  title: result.Title || query,
-                  description: result.Text.substring(0, 300),
-                  link: result.FirstURL,
-                  source: domain,
-                  pubDate: new Date().toISOString(),
-                  timestamp: Date.now(),
-                  tags: assignTags(result.Title || query, result.Text),
-                });
-              }
-            } catch {
-              // Skip if URL parsing fails
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.error(`Failed DuckDuckGo search for "${query}":`, err);
-    }
-  }
-
-  return results;
+  // DuckDuckGo API not reliably returning results, relying on RSS feeds instead
+  return [];
 }
 
 export async function GET() {
