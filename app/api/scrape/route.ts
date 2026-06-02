@@ -28,10 +28,13 @@ const IMPACT_KEYWORDS = [
   'ai enables', 'ai assists', 'ai accelerates', 'ai tackles', 'ai addresses',
   'ai detects', 'ai diagnoses', 'ai discovers', 'ai develops',
 
-  // Medical & healthcare
+  // Medical & healthcare - specific outcomes
   'ai diagnosis', 'ai treatment', 'ai disease', 'ai cancer', 'ai healthcare',
   'ai advances healthcare', 'ai medical breakthrough', 'ai patient',
   'ai drug discovery', 'ai pharmaceutical', 'ai cure',
+  'early detection', 'detect early', 'diagnosis early', 'early diagnosis',
+  'saves lives', 'saved lives', 'helps patients', 'treats patients',
+  'pancreatic cancer', 'disease detection', 'incurable disease',
 
   // Research & validation
   'ai research breakthrough', 'ai landmark study', 'ai validation study',
@@ -39,7 +42,7 @@ const IMPACT_KEYWORDS = [
 
   // Deployment & practical use
   'ai deployed', 'ai practical', 'ai works', 'ai useful', 'ai real-world',
-  'ai actually', 'ai deployed', 'ai launched',
+  'ai actually', 'ai launched',
 
   // Impact areas
   'ai climate', 'ai renewable', 'ai accessibility', 'ai poverty',
@@ -52,6 +55,10 @@ const IMPACT_KEYWORDS = [
 
   // Specific outcomes
   'first time', 'detect early', 'up to', 'faster than', 'beat', 'outperform',
+
+  // Social impact & solutions
+  'ai for good', 'ai social impact', 'ai helping', 'ai assists', 'solves problem',
+  'fixes problem', 'citizen', 'civic solution',
 ];
 
 const NEGATIVE_KEYWORDS = [
@@ -73,15 +80,25 @@ const NEGATIVE_KEYWORDS = [
   'data center secrecy', 'vc thinks', 'vc debate', 'debate over ai', 'ai commentary',
   'ai criticism', 'ethical concerns', 'bias concerns',
 
-  // Business/wealth angles
-  'billionaire', 'minted wealth', 'new rich', 'wealth gap', 'inequality',
+  // Business/wealth angles - expanded
+  'billionaire', 'minted', 'new billionaire', 'new rich', 'wealth gap', 'inequality',
   'venture capital raises', 'venture capital invests', 'startup raises', 'funding round',
+  'raised funding', 'secures funding', 'series a', 'series b', 'series c',
 
-  // Product launches & gadgets
-  'product launch', 'new gadget', 'announces', 'releases new',
+  // Product launches & gadgets - expanded
+  'product launch', 'launches new', 'new gadget', 'announces', 'releases new',
+  'unveiled', 'introducing', 'pendant', 'wearable gadget',
+
+  // Model releases & tech company news
+  'model release', 'model launch', 'new model', 'introduces model', 'announces model',
+  'latest model', 'version upgrade',
+
+  // Disruptive/negative angle language
+  'disrupting', 'disrupts', 'replacing', 'replaces', 'eliminate jobs',
+  'concerns about ai', 'worries about',
 
   // Misc noise
-  'ai pendant', 'groupthink', 'pokemon', 'gaming',
+  'groupthink', 'pokemon', 'gaming', 'entertainment',
 ];
 
 const TAG_KEYWORDS = {
@@ -158,7 +175,7 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
       const items = parseItems(xml);
 
       let sourceCount = 0;
-      const maxPerSource = 5;
+      const maxPerSource = 1;
       for (const item of items) {
         if (sourceCount >= maxPerSource) break;
         if (isPositiveImpactStory(item.title, item.description)) {
@@ -198,6 +215,7 @@ async function searchDuckDuckGo(): Promise<NewsItem[]> {
   ];
 
   const results = [];
+  const seenDomains = new Set<string>();
 
   for (const query of queries) {
     try {
@@ -210,16 +228,27 @@ async function searchDuckDuckGo(): Promise<NewsItem[]> {
       if (data.Results && Array.isArray(data.Results)) {
         for (const result of data.Results.slice(0, 5)) {
           if (result.FirstURL && result.Text) {
-            results.push({
-              id: `duckduckgo::search::${result.FirstURL}`,
-              title: result.Title || query,
-              description: result.Text.substring(0, 300),
-              link: result.FirstURL,
-              source: 'Web Search',
-              pubDate: new Date().toISOString(),
-              timestamp: Date.now(),
-              tags: assignTags(result.Title || query, result.Text),
-            });
+            try {
+              const url = new URL(result.FirstURL);
+              const domain = url.hostname.replace('www.', '');
+
+              // Only add one article per domain
+              if (!seenDomains.has(domain)) {
+                seenDomains.add(domain);
+                results.push({
+                  id: `duckduckgo::search::${result.FirstURL}`,
+                  title: result.Title || query,
+                  description: result.Text.substring(0, 300),
+                  link: result.FirstURL,
+                  source: domain,
+                  pubDate: new Date().toISOString(),
+                  timestamp: Date.now(),
+                  tags: assignTags(result.Title || query, result.Text),
+                });
+              }
+            } catch {
+              // Skip if URL parsing fails
+            }
           }
         }
       }
