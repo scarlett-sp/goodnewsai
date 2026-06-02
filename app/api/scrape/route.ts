@@ -286,7 +286,7 @@ async function searchDuckDuckGo(): Promise<NewsItem[]> {
       const data = await res.json();
 
       if (data.Results && Array.isArray(data.Results)) {
-        for (const result of data.Results.slice(0, 5)) {
+        for (const result of data.Results.slice(0, 15)) {
           if (result.FirstURL && result.Text) {
             try {
               const url = new URL(result.FirstURL);
