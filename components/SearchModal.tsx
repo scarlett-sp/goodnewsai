@@ -65,13 +65,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="e.g., healthcare, education, climate..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8E7E]"
+              className="flex-1 px-4 py-2 border border-[#CABFB6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF8E7E]"
               autoFocus
             />
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-gradient-to-r from-[#FF8E7E] to-[#FFA0B4] text-white font-medium rounded-lg hover:from-[#FFB89C] hover:to-[#FFB5C5] transition-all disabled:opacity-50"
+              className="px-6 py-2 bg-[#FFC96B] hover:bg-[#FFD680] text-white font-medium rounded-lg transition-all disabled:opacity-50"
             >
               {loading ? '...' : 'Search'}
             </button>

@@ -98,7 +98,7 @@ export default function Home() {
             <div className="flex gap-2 w-full sm:w-auto">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium hover:from-blue-600 hover:to-blue-700 transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
+                className="px-4 py-2 rounded-lg bg-[#FFC96B] hover:bg-[#FFD680] text-white font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
               >
                 🔍 Search
               </button>
