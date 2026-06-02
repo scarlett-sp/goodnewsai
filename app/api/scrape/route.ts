@@ -202,16 +202,76 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
 
 async function searchDuckDuckGo(): Promise<NewsItem[]> {
   const queries = [
-    'AI diagnosis detection cancer treatment breakthrough',
-    'AI healthcare medical research drug discovery',
-    'AI climate renewable energy sustainability solution',
-    'AI accessibility disability assistance technology',
-    'AI education learning impact students',
-    'AI scientific breakthrough research validation study',
-    'AI malaria tuberculosis disease prevention',
-    'AI community civic solution infrastructure',
-    'AI disaster response humanitarian aid',
-    'AI agriculture farming food security',
+    // Healthcare - diagnostics & detection
+    'AI cancer detection early diagnosis',
+    'AI disease diagnosis medical imaging',
+    'AI pancreatic cancer detection',
+    'AI pathology diagnosis accuracy',
+    'AI medical breakthrough treatment',
+
+    // Healthcare - drug & research
+    'AI drug discovery pharmaceutical research',
+    'AI protein folding medical breakthrough',
+    'AI clinical trial optimization',
+    'AI rare disease treatment research',
+    'AI gene therapy AI discovery',
+
+    // Healthcare - patient care
+    'AI patient care quality improvement',
+    'AI healthcare access patient outcomes',
+    'AI surgical precision medical outcomes',
+    'AI mental health treatment innovation',
+    'AI elderly care monitoring',
+
+    // Climate & environment
+    'AI climate change solution renewable energy',
+    'AI carbon emissions reduction technology',
+    'AI renewable energy optimization',
+    'AI climate modeling prediction',
+    'AI environmental conservation wildlife',
+
+    // Accessibility & disability
+    'AI accessibility assistive technology disability',
+    'AI blind vision restoration assistance',
+    'AI deaf communication technology',
+    'AI mobility disability assistance',
+    'AI speech recognition accessibility',
+
+    // Education & learning
+    'AI education student learning personalized',
+    'AI literacy learning disadvantaged communities',
+    'AI educational access underserved',
+    'AI teacher support student outcomes',
+    'AI special education learning disability',
+
+    // Community & civic
+    'AI civic tech community solution',
+    'AI local government infrastructure',
+    'AI city planning urban development',
+    'AI public service citizen reporting',
+    'AI community safety neighborhood',
+
+    // Disaster & humanitarian
+    'AI disaster response emergency management',
+    'AI humanitarian aid crisis relief',
+    'AI earthquake tsunami disaster prediction',
+    'AI refugee crisis assistance',
+    'AI disaster recovery rebuilding',
+
+    // Agriculture & food
+    'AI agriculture crop yield farming',
+    'AI food security crop monitoring',
+    'AI sustainable farming soil',
+    'AI farmer income agricultural productivity',
+    'AI livestock disease prevention farming',
+
+    // General positive impact
+    'AI helps people real world impact',
+    'AI solves problem positive social',
+    'AI saves lives human benefit',
+    'AI for good social impact',
+    'AI breakthrough validated study',
+    'AI innovation positive human outcomes',
   ];
 
   const results = [];
