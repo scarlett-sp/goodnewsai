@@ -118,13 +118,24 @@ function parseItems(xml: string) {
 function isPositiveImpactStory(title: string, description: string = ''): boolean {
   const text = `${title} ${description}`.toLowerCase();
 
-  // Filter out explicitly negative stories
+  // Filter out explicitly negative stories - this is our main filter
   if (NEGATIVE_KEYWORDS.some(kw => text.includes(kw))) {
     return false;
   }
 
-  // Require positive impact keywords (more flexible but still targeted)
-  return IMPACT_KEYWORDS.some(kw => text.includes(kw));
+  // For positive matching: require either multiple impact keywords OR specific phrases
+  const hasMultipleKeywords = (IMPACT_KEYWORDS.filter(kw => text.includes(kw)).length >= 2);
+  const hasSpecificPhrase = text.includes('ai') && (
+    text.includes('health') || text.includes('medical') || text.includes('disease') ||
+    text.includes('treatment') || text.includes('cure') || text.includes('diagnosis') ||
+    text.includes('climate') || text.includes('renewable') || text.includes('sustainability') ||
+    text.includes('education') || text.includes('learning') || text.includes('accessibility') ||
+    text.includes('disability') || text.includes('community') || text.includes('civic') ||
+    text.includes('humanitarian') || text.includes('disaster') || text.includes('agriculture') ||
+    text.includes('breakthrough') || text.includes('research') || text.includes('innovation')
+  );
+
+  return hasMultipleKeywords || hasSpecificPhrase;
 }
 
 function assignTags(title: string, description: string = ''): string[] {
