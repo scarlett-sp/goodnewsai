@@ -182,100 +182,70 @@ async function searchDuckDuckGo(): Promise<NewsItem[]> {
   const queries = [
     // Healthcare - cancer & disease detection
     'AI cancer detection early diagnosis',
-    'AI pancreatic cancer detection early',
-    'AI breast cancer screening detection',
-    'AI melanoma skin cancer detection',
-    'AI lung cancer detection diagnosis',
-    'AI disease detection diagnosis accuracy',
-    'AI medical imaging diagnosis improvement',
-    'AI pathology analysis diagnosis',
+    'AI pancreatic cancer detection',
+    'AI disease diagnosis medical',
+    'AI medical imaging breakthrough',
 
     // Healthcare - treatment & outcomes
-    'AI drug discovery breakthrough',
-    'AI clinical trial optimization patient outcomes',
+    'AI drug discovery pharmaceutical',
     'AI personalized medicine treatment',
-    'AI surgical assistance precision',
     'AI patient outcome improvement',
-    'AI healthcare quality improvement',
-    'AI health equity access',
-
-    // Healthcare - specific conditions
-    'AI Alzheimers detection prevention',
-    'AI diabetes management treatment',
-    'AI heart disease prediction',
-    'AI genetic disease diagnosis',
-    'AI rare disease research breakthrough',
+    'AI healthcare innovation',
+    'AI Alzheimers diabetes detection',
 
     // Climate & environment solutions
-    'AI climate change solution prediction',
-    'AI renewable energy solar wind optimization',
+    'AI climate change solution',
+    'AI renewable energy optimization',
     'AI carbon emissions reduction',
-    'AI climate modeling forecast',
-    'AI environmental conservation AI wildlife',
-    'AI deforestation monitoring',
-    'AI water management conservation',
+    'AI environmental conservation',
 
     // Accessibility & disability technology
-    'AI assistive technology disabled',
+    'AI assistive technology disability',
     'AI blind vision restoration',
-    'AI deaf communication access',
-    'AI mobility assistance wheelchair',
-    'AI speech recognition accessibility',
-    'AI accessibility technology inclusive',
-    'AI disability support technology',
+    'AI deaf communication',
+    'AI accessibility inclusive',
 
     // Education & learning
     'AI personalized learning education',
-    'AI education access disadvantaged',
-    'AI literacy improvement learning',
-    'AI student outcome achievement',
-    'AI teacher support educational AI',
-    'AI special education learning disability',
-    'AI educational equity opportunity',
+    'AI education access equity',
+    'AI literacy student improvement',
+    'AI special education support',
 
     // Community & civic impact
-    'AI civic tech community',
-    'AI city planning urban',
-    'AI public service government',
-    'AI local community problem solving',
-    'AI neighborhood infrastructure',
-    'AI citizen engagement participation',
+    'AI civic tech solution',
+    'AI city planning improvement',
+    'AI public service innovation',
     'AI community safety',
 
     // Disaster & humanitarian
-    'AI disaster prediction earthquake tsunami',
-    'AI humanitarian aid crisis response',
-    'AI emergency response management',
-    'AI disaster recovery rebuilding',
-    'AI refugee assistance support',
-    'AI natural disaster prediction',
-    'AI flood prediction early warning',
+    'AI disaster prediction response',
+    'AI humanitarian aid emergency',
+    'AI natural disaster forecasting',
+    'AI refugee crisis assistance',
 
     // Agriculture & food security
-    'AI crop yield farming agriculture',
-    'AI food security production',
-    'AI sustainable farming soil',
-    'AI farmer productivity income',
-    'AI livestock health monitoring',
-    'AI agricultural water management',
-    'AI crop disease pest detection',
+    'AI agriculture crop yield',
+    'AI food security sustainability',
+    'AI farming productivity innovation',
 
     // General positive impact & research
-    'AI research breakthrough validated',
-    'AI medical research study',
+    'AI medical breakthrough research',
     'AI for good social impact',
-    'AI helps people humanity',
-    'AI saves lives positive',
-    'AI innovation human benefit',
-    'AI scientific breakthrough',
+    'AI scientific discovery',
+    'AI healthcare advancement',
+    'AI helps people benefit',
+    'AI innovation positive outcomes',
     'AI innovation solving problems',
+    'AI transformation society',
+    'AI improvement human life',
+    'AI research validation study',
 
-    // Specific known positive applications
-    'Mayo Clinic AI cancer',
-    'Harvard AI research',
-    'AI treatment advancement',
-    'AI improvement patient care',
-    'AI benefit people society',
+    // Specific institutional sources
+    'Mayo Clinic AI cancer detection',
+    'Harvard AI research breakthrough',
+    'Stanford AI medical',
+    'BBC AI healthcare breakthrough',
+    'TIME magazine AI positive',
   ];
 
   const results = [];
@@ -290,7 +260,7 @@ async function searchDuckDuckGo(): Promise<NewsItem[]> {
       const data = await res.json();
 
       if (data.Results && Array.isArray(data.Results)) {
-        for (const result of data.Results.slice(0, 30)) {
+        for (const result of data.Results.slice(0, 15)) {
           if (result.FirstURL && result.Text) {
             try {
               const url = new URL(result.FirstURL);
