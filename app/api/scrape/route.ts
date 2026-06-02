@@ -135,8 +135,17 @@ function isPositiveImpactStory(title: string, description: string = ''): boolean
     return false;
   }
 
-  // Require positive impact keywords
-  return IMPACT_KEYWORDS.some(kw => text.includes(kw));
+  // Must be about an impact area
+  const impactAreas = ['health', 'medical', 'disease', 'patient', 'treatment', 'diagnosis', 'climate', 'environment', 'renewable', 'education', 'learning', 'accessibility', 'disability', 'community', 'civic', 'agriculture', 'farming', 'disaster', 'humanitarian'];
+  const hasImpactArea = impactAreas.some(area => text.includes(area));
+
+  if (!hasImpactArea) {
+    return false;
+  }
+
+  // Must have a positive outcome indicator
+  const outcomes = ['helps', 'improves', 'breakthrough', 'innovation', 'solution', 'saves', 'advance', 'transform', 'research', 'study', 'benefit', 'good', 'positive', 'success', 'achieve', 'treatment', 'therapy', 'cure', 'detect', 'diagnosis', 'development'];
+  return outcomes.some(outcome => text.includes(outcome));
 }
 
 function assignTags(title: string, description: string = ''): string[] {
