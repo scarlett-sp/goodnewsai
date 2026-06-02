@@ -130,13 +130,20 @@ function parseItems(xml: string) {
 function isPositiveImpactStory(title: string, description: string = ''): boolean {
   const text = `${title} ${description}`.toLowerCase();
 
-  // Filter out explicitly negative stories
+  // PRIMARY FILTER: Remove explicitly negative stories
   if (NEGATIVE_KEYWORDS.some(kw => text.includes(kw))) {
     return false;
   }
 
-  // Require positive impact keywords
-  return IMPACT_KEYWORDS.some(kw => text.includes(kw));
+  // SECONDARY FILTER: Must mention AI and be about a relevant topic
+  if (!text.includes('ai') && !text.includes('artificial intelligence')) {
+    return false;
+  }
+
+  // If it has AI + relevant topic + no negative keywords, include it
+  // Trust that the RSS feeds are good sources
+  const relevantTopics = ['health', 'medical', 'disease', 'treatment', 'research', 'innovation', 'climate', 'sustainability', 'education', 'learning', 'accessibility', 'community', 'food', 'agriculture', 'breakthrough'];
+  return relevantTopics.some(topic => text.includes(topic));
 }
 
 function assignTags(title: string, description: string = ''): string[] {
