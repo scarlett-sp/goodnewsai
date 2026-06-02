@@ -23,42 +23,32 @@ const RSS_FEEDS = [
 ];
 
 const IMPACT_KEYWORDS = [
-  // Problem-solving verbs
-  'ai helps', 'ai solves', 'ai saves', 'ai improves', 'ai reduces',
-  'ai enables', 'ai assists', 'ai accelerates', 'ai tackles', 'ai addresses',
-  'ai detects', 'ai diagnoses', 'ai discovers', 'ai develops',
+  // Broad positive keywords
+  'ai', 'health', 'medical', 'patient', 'disease', 'treatment', 'cure',
+  'climate', 'environment', 'renewable', 'sustainable', 'education', 'learning',
+  'accessibility', 'disability', 'community', 'civic', 'disaster', 'humanitarian',
+  'agriculture', 'farming', 'food security', 'breakthrough', 'research', 'study',
+  'innovation', 'solution', 'helps', 'improves', 'reduces', 'saves',
 
-  // Medical & healthcare - specific outcomes
-  'ai diagnosis', 'ai treatment', 'ai disease', 'ai cancer', 'ai healthcare',
-  'ai advances healthcare', 'ai medical breakthrough', 'ai patient',
-  'ai drug discovery', 'ai pharmaceutical', 'ai cure',
-  'early detection', 'detect early', 'diagnosis early', 'early diagnosis',
-  'saves lives', 'saved lives', 'helps patients', 'treats patients',
-  'pancreatic cancer', 'disease detection', 'incurable disease',
+  // Healthcare specific
+  'diagnosis', 'detection', 'cancer', 'healthcare', 'drug discovery', 'pharmaceutical',
+  'clinical', 'surgery', 'patient care', 'health outcomes', 'disease prevention',
 
-  // Research & validation
-  'ai research breakthrough', 'ai landmark study', 'ai validation study',
-  'ai scientific discovery', 'ai breakthrough research',
+  // Environmental & climate
+  'carbon', 'emissions', 'renewable energy', 'solar', 'wind', 'conservation',
+  'biodiversity', 'sustainability', 'green technology',
 
-  // Deployment & practical use
-  'ai deployed', 'ai practical', 'ai works', 'ai useful', 'ai real-world',
-  'ai actually', 'ai launched',
+  // Community & social
+  'civic tech', 'civic solution', 'community', 'local', 'nonprofit', 'volunteer',
+  'accessibility', 'assistive technology', 'disability access', 'inclusion',
 
-  // Impact areas
-  'ai climate', 'ai renewable', 'ai accessibility', 'ai poverty',
-  'ai education', 'ai learning', 'ai disaster', 'ai humanitarian',
-  'ai agriculture', 'ai farming', 'ai community', 'ai civic',
+  // Education & development
+  'education', 'learning', 'students', 'literacy', 'skill', 'training',
 
-  // Performance & efficiency
-  'ai outperforms', 'ai speeds up', 'ai automates', 'ai efficiency',
-  'ai accelerates drug',
-
-  // Specific outcomes
-  'first time', 'detect early', 'up to', 'faster than', 'beat', 'outperform',
-
-  // Social impact & solutions
-  'ai for good', 'ai social impact', 'ai helping', 'ai assists', 'solves problem',
-  'fixes problem', 'citizen', 'civic solution',
+  // Impact outcomes
+  'breakthrough', 'landmark', 'validation', 'evidence', 'efficacy', 'effective',
+  'success', 'achievement', 'progress', 'advance', 'innovation', 'transform',
+  'change', 'impact', 'benefit', 'good', 'positive',
 ];
 
 const NEGATIVE_KEYWORDS = [
