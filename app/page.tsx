@@ -88,21 +88,11 @@ export default function Home() {
       <div className="border-b border-[#FF8E7E]/20 backdrop-blur-md bg-white/10 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <img
-                src="/logo.png"
-                alt="Good News AI Logo"
-                className="h-12 sm:h-14 w-auto"
-              />
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-[#221E1C] tracking-tight">
-                  Good News AI
-                </h1>
-                <p className="text-[#221E1C]/70 text-sm sm:text-base mt-1">
-                  Positive developments in artificial intelligence
-                </p>
-              </div>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Good News AI Logo"
+              className="h-14 sm:h-16 w-auto"
+            />
             <button
               onClick={handleRefresh}
               disabled={refreshing}
