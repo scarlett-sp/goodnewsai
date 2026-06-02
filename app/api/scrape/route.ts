@@ -12,20 +12,20 @@ interface NewsItem {
 }
 
 const RSS_FEEDS = [
-  // Research & impact-focused
-  { name: 'Science Daily - AI', url: 'https://www.sciencedaily.com/feeds/computers_math/artificial_intelligence.xml' },
+  // Technology & innovation
   { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/' },
+  { name: 'Wired', url: 'https://www.wired.com/feed/rss' },
+  { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
 
-  // Mainstream news with tech/innovation coverage
-  { name: 'BBC News - Science', url: 'https://feeds.bbci.co.uk/news/science_and_environment/rss.xml' },
-  { name: 'Forbes - Technology', url: 'https://www.forbes.com/technology/feed2/' },
-  { name: 'The Verge', url: 'https://www.theverge.com/rss/index.xml' },
+  // Healthcare & medical innovation
+  { name: 'Healthcare IT News', url: 'https://www.healthcareitnews.com/feed' },
+  { name: 'Medscape', url: 'https://www.medscape.com/feed/news' },
 
-  // Healthcare & wellness
-  { name: 'Medical News Today', url: 'https://feeds.medicalnewstoday.com/rss-full.xml' },
+  // Nonprofit & social impact tech
+  { name: 'TechSoup', url: 'https://www.techsoup.org/rss.xml' },
 
-  // Innovation for social good
-  { name: 'Wired - Tech', url: 'https://www.wired.com/feed/rss' },
+  // Science news
+  { name: 'Nature', url: 'https://www.nature.com/nplants/rss/current.xml' },
 ];
 
 const IMPACT_KEYWORDS = [
@@ -87,8 +87,16 @@ const NEGATIVE_KEYWORDS = [
   'disrupting', 'disrupts', 'replacing', 'replaces', 'eliminate jobs',
   'concerns about ai', 'worries about',
 
-  // Misc noise
-  'groupthink', 'pokemon', 'gaming', 'entertainment',
+  // Product promos & shopping content
+  'promo', 'discount', 'coupon', 'deal', 'sale', 'code', 'save off',
+  'buy now', 'get started', 'best deals', 'sale price', 'limited time',
+
+  // Entertainment & reviews
+  'movie', 'review', 'best of', 'top picks', 'ranking', 'rating',
+  'groupthink', 'pokemon', 'gaming', 'entertainment', 'tv show', 'film', 'netflix',
+
+  // Environmental problems without solutions
+  'illegal dump', 'illegal waste', 'pollution watchlist', 'environmental scandal',
 ];
 
 const TAG_KEYWORDS = {
@@ -135,21 +143,54 @@ function isPositiveImpactStory(title: string, description: string = ''): boolean
     return false;
   }
 
-  // SECONDARY FILTER: Be about impact/solutions in relevant areas
-  // Allows articles that focus on the problem being solved rather than tech announcement
+  // SECONDARY FILTER: Must be about an impact area
   const impactAreas = [
-    // Healthcare
-    'health', 'medical', 'disease', 'treatment', 'patient', 'diagnosis', 'research',
-    // Community & social
-    'community', 'homeless', 'poverty', 'elder', 'elderly', 'aging', 'disability', 'access', 'education', 'learning',
-    // Environment & agriculture
-    'climate', 'sustainability', 'renewable', 'agriculture', 'farming', 'food', 'water',
-    // Specific solutions
-    'breakthrough', 'innovation', 'solution', 'helps', 'support', 'assist', 'improve',
-    'companion', 'care', 'shelter', 'rescue', 'aid', 'crisis', 'disaster', 'relief'
-  ];
+    // Healthcare & wellness
+    'health', 'medical', 'disease', 'treatment', 'patient', 'diagnosis', 'cancer',
+    'therapy', 'clinical', 'pharmaceutical', 'mental health',
 
-  return impactAreas.some(area => text.includes(area));
+    // Community & social
+    'community', 'homeless', 'homelessness', 'poverty', 'civic', 'neighborhood',
+    'nonprofit', 'social', 'civic tech',
+
+    // Care & vulnerable populations
+    'elder', 'elderly', 'aging', 'disability', 'disabled', 'blind', 'deaf',
+    'accessibility', 'assistive', 'inclusive', 'children', 'youth',
+
+    // Education
+    'education', 'learning', 'student', 'school', 'literacy', 'teach',
+
+    // Environmental
+    'climate', 'renewable', 'sustainable', 'environment', 'conservation',
+    'carbon', 'emissions', 'solar', 'wind', 'green',
+
+    // Agriculture & food
+    'agriculture', 'farming', 'crop', 'food', 'security', 'farmer',
+
+    // Animal welfare
+    'animal', 'pet', 'shelter', 'wildlife', 'conservation',
+
+    // Disaster & emergency
+    'disaster', 'emergency', 'crisis', 'relief', 'rescue', 'recovery',
+
+    // Housing & infrastructure
+    'housing', 'infrastructure', 'urban'
+  ];
+  const hasImpactArea = impactAreas.some(area => text.includes(area));
+  if (!hasImpactArea) return false;
+
+  // TERTIARY FILTER: Must also have positive/solution language
+  const positiveOutcomes = [
+    'ai', 'artificial intelligence', 'machine learning', 'breakthrough', 'innovation', 'solution',
+    'helps', 'help', 'support', 'assist', 'improve', 'improving',
+    'advancing', 'advancement', 'research', 'care', 'rescue', 'aid',
+    'transforming', 'transform', 'developing', 'development', 'technology', 'tool',
+    'companion', 'redefining', 'fighting', 'fight', 'scale', 'detect', 'detection',
+    'diagnose', 'diagnosis', 'prediction', 'predict', 'enable', 'empower', 'accelerate',
+    'solve', 'solving', 'opportunity', 'potential', 'advance', 'benefit',
+    'success', 'effective', 'treatment', 'therapy', 'hope', 'address', 'tackle'
+  ];
+  return positiveOutcomes.some(outcome => text.includes(outcome));
 }
 
 function assignTags(title: string, description: string = ''): string[] {
