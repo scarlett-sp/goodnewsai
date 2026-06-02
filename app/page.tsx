@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import NewsCard from '@/components/NewsCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import SearchModal from '@/components/SearchModal';
 
 interface NewsItem {
   id: string;
@@ -48,6 +49,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>('');
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const stored = loadStored();
@@ -93,14 +95,22 @@ export default function Home() {
               alt="Good News AI Logo"
               className="h-14 sm:h-16 w-auto"
             />
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#FF8E7E] to-[#FFA0B4] text-white font-medium hover:from-[#FFB89C] hover:to-[#FFB5C5] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 w-full sm:w-auto justify-center"
-            >
-              {refreshing ? <LoadingSpinner /> : '↻'}
-              {refreshing ? 'Refreshing...' : 'Refresh'}
-            </button>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium hover:from-blue-600 hover:to-blue-700 transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
+              >
+                🔍 Search
+              </button>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#FF8E7E] to-[#FFA0B4] text-white font-medium hover:from-[#FFB89C] hover:to-[#FFB5C5] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 flex-1 sm:flex-none justify-center"
+              >
+                {refreshing ? <LoadingSpinner /> : '↻'}
+                {refreshing ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
           </div>
           {lastUpdate && (
             <p className="text-xs sm:text-sm text-[#221E1C]/60 mt-3">
@@ -133,6 +143,8 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </main>
   );
 }

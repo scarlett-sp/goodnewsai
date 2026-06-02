@@ -1,0 +1,46 @@
+
+> positive-ai-news@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.196:3000
+✓ Ready in 1910ms
+
+(node:43952) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ GET / 200 in 3.3s (next.js: 3.2s, application-code: 87ms)
+(node:43913) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error scraping The Wire: Error: Attribute without value
+Line: 0
+Column: 1066
+Char: s
+    at new Promise (<anonymous>)
+ GET /api/scrape 200 in 2.2s (next.js: 333ms, application-code: 1871ms)
+ GET /api/news 200 in 133ms (next.js: 128ms, application-code: 6ms)
+ GET / 200 in 49ms (next.js: 10ms, application-code: 39ms)
+ GET /api/news 200 in 10ms (next.js: 3ms, application-code: 7ms)
+ GET / 200 in 29ms (next.js: 4ms, application-code: 25ms)
+Error scraping The Wire: Error: Attribute without value
+Line: 0
+Column: 1066
+Char: s
+    at new Promise (<anonymous>)
+ GET /api/scrape 200 in 862ms (next.js: 5ms, application-code: 857ms)
+ GET /api/news 200 in 8ms (next.js: 3ms, application-code: 5ms)
+Error scraping The Wire: Error: Attribute without value
+Line: 0
+Column: 1066
+Char: s
+    at new Promise (<anonymous>)
+ GET /api/scrape 200 in 420ms (next.js: 3ms, application-code: 417ms)
+ GET /api/news 200 in 6ms (next.js: 2ms, application-code: 4ms)
+Error scraping The Wire: Error: Attribute without value
+Line: 0
+Column: 1066
+Char: s
+    at new Promise (<anonymous>)
+ GET /api/scrape 200 in 493ms (next.js: 2ms, application-code: 491ms)
+ GET /api/news 200 in 17ms (next.js: 1247µs, application-code: 16ms)
+[?25h
