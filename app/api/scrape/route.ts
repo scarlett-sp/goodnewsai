@@ -23,32 +23,42 @@ const RSS_FEEDS = [
 ];
 
 const IMPACT_KEYWORDS = [
-  // Broad positive keywords
-  'ai', 'health', 'medical', 'patient', 'disease', 'treatment', 'cure',
-  'climate', 'environment', 'renewable', 'sustainable', 'education', 'learning',
-  'accessibility', 'disability', 'community', 'civic', 'disaster', 'humanitarian',
-  'agriculture', 'farming', 'food security', 'breakthrough', 'research', 'study',
-  'innovation', 'solution', 'helps', 'improves', 'reduces', 'saves',
+  // Healthcare & medicine outcomes
+  'ai detects', 'ai diagnoses', 'ai treats', 'ai cures', 'ai finds treatment',
+  'ai discovers', 'cancer detection', 'early detection', 'disease diagnosis',
+  'drug discovery', 'medical breakthrough', 'healthcare improvement',
+  'patient outcome', 'saves lives', 'treatment advance', 'cure',
+  'pancreatic cancer', 'disease prevention', 'patient care',
 
-  // Healthcare specific
-  'diagnosis', 'detection', 'cancer', 'healthcare', 'drug discovery', 'pharmaceutical',
-  'clinical', 'surgery', 'patient care', 'health outcomes', 'disease prevention',
+  // Climate & environment solutions
+  'ai climate', 'renewable energy', 'carbon reduction', 'emissions reduction',
+  'sustainable', 'conservation', 'environmental solution', 'solar', 'wind',
+  'climate solution', 'eco', 'green energy',
 
-  // Environmental & climate
-  'carbon', 'emissions', 'renewable energy', 'solar', 'wind', 'conservation',
-  'biodiversity', 'sustainability', 'green technology',
+  // Accessibility & disability
+  'accessibility', 'assistive technology', 'disability', 'blind', 'deaf', 'mobility',
+  'helping disabled', 'disability access', 'inclusive technology',
 
-  // Community & social
-  'civic tech', 'civic solution', 'community', 'local', 'nonprofit', 'volunteer',
-  'accessibility', 'assistive technology', 'disability access', 'inclusion',
+  // Education & learning
+  'education', 'student learning', 'literacy', 'educational access', 'learning tool',
+  'school improvement', 'student outcome', 'teacher support',
 
-  // Education & development
-  'education', 'learning', 'students', 'literacy', 'skill', 'training',
+  // Community & civic solutions
+  'civic', 'community solution', 'civic tech', 'local government', 'citizen',
+  'public service', 'neighborhood', 'community problem', 'civic engagement',
 
-  // Impact outcomes
-  'breakthrough', 'landmark', 'validation', 'evidence', 'efficacy', 'effective',
-  'success', 'achievement', 'progress', 'advance', 'innovation', 'transform',
-  'change', 'impact', 'benefit', 'good', 'positive',
+  // Disaster & humanitarian
+  'disaster response', 'humanitarian', 'emergency aid', 'crisis help', 'relief',
+  'rescue', 'natural disaster', 'disaster prediction',
+
+  // Agriculture & food
+  'agriculture', 'farming', 'crop yield', 'food security', 'farm', 'sustainable farming',
+  'food production', 'agricultural efficiency',
+
+  // General positive indicators
+  'breakthrough research', 'landmark study', 'validated study', 'research shows',
+  'clinical trial', 'for good', 'social impact', 'solves problem', 'positive impact',
+  'helps people', 'assists', 'empowering', 'innovation', 'advance', 'improve',
 ];
 
 const NEGATIVE_KEYWORDS = [
@@ -135,17 +145,8 @@ function isPositiveImpactStory(title: string, description: string = ''): boolean
     return false;
   }
 
-  // Must be about an impact area
-  const impactAreas = ['health', 'medical', 'disease', 'patient', 'treatment', 'diagnosis', 'climate', 'environment', 'renewable', 'education', 'learning', 'accessibility', 'disability', 'community', 'civic', 'agriculture', 'farming', 'disaster', 'humanitarian'];
-  const hasImpactArea = impactAreas.some(area => text.includes(area));
-
-  if (!hasImpactArea) {
-    return false;
-  }
-
-  // Must have a positive outcome indicator
-  const outcomes = ['helps', 'improves', 'breakthrough', 'innovation', 'solution', 'saves', 'advance', 'transform', 'research', 'study', 'benefit', 'good', 'positive', 'success', 'achieve', 'treatment', 'therapy', 'cure', 'detect', 'diagnosis', 'development'];
-  return outcomes.some(outcome => text.includes(outcome));
+  // Require positive impact keywords (more flexible but still targeted)
+  return IMPACT_KEYWORDS.some(kw => text.includes(kw));
 }
 
 function assignTags(title: string, description: string = ''): string[] {
