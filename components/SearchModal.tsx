@@ -98,9 +98,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <NewsCard
                   key={item.id}
                   item={{
-                    ...item,
+                    id: item.id,
+                    title: item.title,
+                    description: item.description,
+                    link: item.link,
+                    source: item.source,
                     pubDate: item.pubDate || new Date().toISOString(),
-                    timestamp: item.timestamp || Date.now(),
                     tags: item.tags || [],
                   }}
                 />
