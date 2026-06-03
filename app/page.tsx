@@ -31,28 +31,27 @@ function getCardSize(index: number): 'small' | 'medium' | 'large' {
   return SIZE_SEQUENCE[index % SIZE_SEQUENCE.length];
 }
 
-// Spread image cards evenly through the list so every column gets some
+// Sort by recency, then make minimal swaps to spread image cards across columns
 function distributeImageCards(items: NewsItem[]): NewsItem[] {
-  const withImage = items.filter(i => i.imageUrl);
-  const withoutImage = items.filter(i => !i.imageUrl);
-  if (withImage.length === 0) return items;
+  // Always sort newest-first first
+  const result = [...items].sort((a, b) => b.timestamp - a.timestamp);
+  const imageCount = result.filter(i => i.imageUrl).length;
+  if (imageCount === 0) return result;
 
-  const result: NewsItem[] = [];
-  // Space image cards roughly every N positions
-  const spacing = Math.max(2, Math.floor(items.length / withImage.length));
-  let imageIndex = 0;
+  const spacing = Math.max(2, Math.floor(result.length / imageCount));
 
-  for (let i = 0; i < items.length; i++) {
-    if (imageIndex < withImage.length && i % spacing === 0) {
-      result.push(withImage[imageIndex++]);
-    } else {
-      const next = withoutImage.shift();
-      if (next) result.push(next);
+  // For each evenly-spaced target position, find the nearest image card
+  // within a small window and swap it in — preserving overall recency
+  for (let target = 0; target < result.length; target += spacing) {
+    if (result[target]?.imageUrl) continue; // already an image here
+    // Search within the next `spacing` slots for an image card to swap in
+    const windowEnd = Math.min(target + spacing, result.length);
+    const nearestImage = result.slice(target + 1, windowEnd).findIndex(i => i.imageUrl);
+    if (nearestImage !== -1) {
+      const swapPos = target + 1 + nearestImage;
+      [result[target], result[swapPos]] = [result[swapPos], result[target]];
     }
   }
-  // Append any remaining items
-  while (imageIndex < withImage.length) result.push(withImage[imageIndex++]);
-  withoutImage.forEach(i => result.push(i));
 
   return result;
 }
