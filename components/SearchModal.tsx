@@ -71,18 +71,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-[#FFC96B] hover:bg-[#FFD680] text-white font-medium rounded-lg transition-all disabled:opacity-50 flex items-center justify-center"
-              aria-label="Search"
+              className="px-6 py-2 bg-[#FFC96B] hover:bg-[#FFD680] text-white font-medium rounded-lg transition-all disabled:opacity-50 flex items-center gap-2"
             >
-              {loading ? (
-                <span className="text-lg">...</span>
-              ) : (
-                <img
-                  src="/search-icon.png"
-                  alt="Search"
-                  className="h-5 w-5"
-                />
-              )}
+              {loading ? '...' : '🔍 Search'}
             </button>
           </form>
         </div>
