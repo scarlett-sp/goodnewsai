@@ -325,7 +325,7 @@ async function searchWithSerper(): Promise<NewsItem[]> {
                 pubDate: item.date ? new Date(item.date).toISOString() : new Date().toISOString(),
                 timestamp: item.date ? new Date(item.date).getTime() : Date.now(),
                 tags: assignTags(item.title, item.snippet),
-                imageUrl: item.image,
+                imageUrl: item.imageUrl || item.image || undefined,
               });
             }
           }
