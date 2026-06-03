@@ -166,6 +166,10 @@ function isPositiveImpactStory(title: string, description: string = ''): boolean
     return false;
   }
 
+  // CRITICAL: Must mention AI/ML explicitly
+  const hasAI = ['ai', 'artificial intelligence', 'machine learning', 'neural', 'algorithm'].some(term => text.includes(term));
+  if (!hasAI) return false;
+
   // SECONDARY FILTER: Must be about an impact area
   const impactAreas = [
     // Healthcare & wellness
@@ -204,9 +208,9 @@ function isPositiveImpactStory(title: string, description: string = ''): boolean
 
   // TERTIARY FILTER: Must also have positive/solution language
   const positiveOutcomes = [
-    'ai', 'artificial intelligence', 'machine learning', 'breakthrough', 'innovation', 'solution',
+    'breakthrough', 'innovation', 'solution',
     'helps', 'help', 'support', 'assist', 'improve', 'improving',
-    'advancing', 'advancement', 'research', 'care', 'rescue', 'aid',
+    'advancing', 'advancement', 'care', 'rescue', 'aid',
     'transforming', 'transform', 'developing', 'development', 'technology', 'tool',
     'companion', 'redefining', 'fighting', 'fight', 'scale', 'detect', 'detection',
     'diagnose', 'diagnosis', 'prediction', 'predict', 'enable', 'empower', 'accelerate',
