@@ -287,6 +287,10 @@ async function searchWithSerper(): Promise<NewsItem[]> {
       'AI community disaster relief',
       'AI agriculture farming food security',
       'AI elderly care disability accessibility',
+      'AI mental health therapy wellness',
+      'AI wildlife conservation biodiversity',
+      'AI poverty economic development',
+      'AI housing urban planning infrastructure',
     ];
 
     const allResults: NewsItem[] = [];
@@ -301,7 +305,7 @@ async function searchWithSerper(): Promise<NewsItem[]> {
           },
           body: JSON.stringify({
             q: query,
-            num: 5,
+            num: 10,
             type: 'news',
           }),
         });
