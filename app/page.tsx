@@ -63,13 +63,26 @@ export default function Home() {
 
   const doRefresh = async (current: NewsItem[]) => {
     try {
+      console.log('Fetching fresh articles...');
       const response = await fetch('/api/scrape');
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
+      }
+
       const fresh: NewsItem[] = await response.json();
+      console.log('Fresh articles fetched:', fresh.length);
+      console.log('Current articles:', current.length);
+
       const merged = mergeAndStore(current, fresh);
+      console.log('Merged articles:', merged.length);
+
       setNews(merged);
       setLastUpdate(new Date().toLocaleString());
     } catch (error) {
       console.error('Error fetching news:', error);
+      alert('Failed to refresh: ' + String(error));
     } finally {
       setLoading(false);
     }
