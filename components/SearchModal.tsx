@@ -34,7 +34,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     try {
       const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
       const data = await response.json();
-      setResults(data);
+      if (!response.ok) {
+        console.error('Search API error:', data);
+        setResults([]);
+      } else {
+        setResults(Array.isArray(data) ? data : []);
+      }
     } catch (error) {
       console.error('Search failed:', error);
       setResults([]);
