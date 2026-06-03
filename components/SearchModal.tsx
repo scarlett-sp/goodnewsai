@@ -71,9 +71,18 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-[#FFC96B] hover:bg-[#FFD680] text-white font-medium rounded-lg transition-all disabled:opacity-50"
+              className="px-4 py-2 bg-[#FFC96B] hover:bg-[#FFD680] text-white font-medium rounded-lg transition-all disabled:opacity-50 flex items-center justify-center"
+              aria-label="Search"
             >
-              {loading ? '...' : 'Search'}
+              {loading ? (
+                <span className="text-lg">...</span>
+              ) : (
+                <img
+                  src="/search-icon.png"
+                  alt="Search"
+                  className="h-5 w-5"
+                />
+              )}
             </button>
           </form>
         </div>
@@ -85,8 +94,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               Enter a topic to search for AI impact articles
             </p>
           ) : loading ? (
-            <div className="text-center py-12">
-              <p className="text-gray-600">Searching...</p>
+            <div className="flex flex-col items-center justify-center py-12">
+              <img
+                src="/search-loader.gif"
+                alt="Searching"
+                className="h-32 w-auto mb-4"
+              />
+              <p className="text-gray-600">Finding the good news...</p>
             </div>
           ) : results.length === 0 ? (
             <p className="text-gray-500 text-center py-12">
