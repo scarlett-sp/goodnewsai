@@ -271,19 +271,79 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
   return results;
 }
 
-async function searchDuckDuckGo(): Promise<NewsItem[]> {
-  // DuckDuckGo API not reliably returning results, relying on RSS feeds instead
-  return [];
+async function searchWithSerper(): Promise<NewsItem[]> {
+  const apiKey = process.env.SERPER_API_KEY;
+  if (!apiKey) {
+    console.warn('SERPER_API_KEY not configured for scrape endpoint');
+    return [];
+  }
+
+  try {
+    const searchQueries = [
+      'AI helping healthcare diagnosis treatment',
+      'AI education learning accessibility',
+      'AI climate environment sustainability',
+      'AI community disaster relief',
+      'AI agriculture farming food security',
+      'AI elderly care disability accessibility',
+    ];
+
+    const allResults: NewsItem[] = [];
+
+    for (const query of searchQueries) {
+      try {
+        const response = await fetch('https://google.serper.dev/search', {
+          method: 'POST',
+          headers: {
+            'X-API-KEY': apiKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            q: query,
+            num: 5,
+            type: 'news',
+          }),
+        });
+
+        if (!response.ok) continue;
+
+        const data = await response.json();
+        if (data.news) {
+          for (const item of data.news) {
+            if (isPositiveImpactStory(item.title, item.snippet)) {
+              allResults.push({
+                id: `serper::${item.link}`,
+                title: item.title.substring(0, 150),
+                description: item.snippet.substring(0, 300),
+                link: item.link,
+                source: new URL(item.link).hostname || 'Web',
+                pubDate: item.date ? new Date(item.date).toISOString() : new Date().toISOString(),
+                timestamp: item.date ? new Date(item.date).getTime() : Date.now(),
+                tags: assignTags(item.title, item.snippet),
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.error(`Failed to search query "${query}":`, err);
+      }
+    }
+
+    return allResults;
+  } catch (err) {
+    console.error('Serper search error:', err);
+    return [];
+  }
 }
 
 export async function GET() {
   try {
-    const [rssResults, searchResults] = await Promise.all([
+    const [rssResults, serperResults] = await Promise.all([
       scrapeRSSFeeds(),
-      searchDuckDuckGo(),
+      searchWithSerper(),
     ]);
 
-    const allResults = [...rssResults, ...searchResults];
+    const allResults = [...rssResults, ...serperResults];
     const unique = Array.from(new Map(allResults.map(item => [item.id, item])).values());
     const sorted = unique.sort((a, b) => b.timestamp - a.timestamp);
 
