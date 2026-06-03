@@ -31,29 +31,46 @@ function getCardSize(index: number): 'small' | 'medium' | 'large' {
   return SIZE_SEQUENCE[index % SIZE_SEQUENCE.length];
 }
 
-// Sort by recency, then make minimal swaps to spread image cards across columns
-function distributeImageCards(items: NewsItem[]): NewsItem[] {
-  // Always sort newest-first first
-  const result = [...items].sort((a, b) => b.timestamp - a.timestamp);
-  const imageCount = result.filter(i => i.imageUrl).length;
-  if (imageCount === 0) return result;
+// Rearrange articles so CSS columns renders them left-to-right by recency.
+// CSS columns fills top-to-bottom per column, so to get most-recent articles
+// reading across the top row we need column-major ordering:
+// sorted = [1,2,3,4,5,6,7,8,9] with 3 cols → col1=[1,4,7] col2=[2,5,8] col3=[3,6,9]
+// array order for columns = [1,4,7, 2,5,8, 3,6,9]
+function arrangeByRecency(items: NewsItem[], numCols = 3): NewsItem[] {
+  const sorted = [...items].sort((a, b) => b.timestamp - a.timestamp);
+  if (sorted.length === 0) return sorted;
 
-  const spacing = Math.max(2, Math.floor(result.length / imageCount));
+  // Split into rows of numCols, then interleave image cards gently
+  const withImage = sorted.filter(i => i.imageUrl);
+  const withoutImage = sorted.filter(i => !i.imageUrl);
 
-  // For each evenly-spaced target position, find the nearest image card
-  // within a small window and swap it in — preserving overall recency
-  for (let target = 0; target < result.length; target += spacing) {
-    if (result[target]?.imageUrl) continue; // already an image here
-    // Search within the next `spacing` slots for an image card to swap in
-    const windowEnd = Math.min(target + spacing, result.length);
-    const nearestImage = result.slice(target + 1, windowEnd).findIndex(i => i.imageUrl);
-    if (nearestImage !== -1) {
-      const swapPos = target + 1 + nearestImage;
-      [result[target], result[swapPos]] = [result[swapPos], result[target]];
+  // Merge back, spacing image cards every ~(total/imageCount) positions
+  const merged: NewsItem[] = [];
+  const spacing = withImage.length > 0
+    ? Math.max(numCols, Math.floor(sorted.length / withImage.length))
+    : sorted.length;
+  let imgIdx = 0, plainIdx = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    if (imgIdx < withImage.length && i % spacing === 0) {
+      merged.push(withImage[imgIdx++]);
+    } else if (plainIdx < withoutImage.length) {
+      merged.push(withoutImage[plainIdx++]);
+    } else {
+      merged.push(withImage[imgIdx++]);
     }
   }
 
-  return result;
+  // Now rearrange into column-major order so left-to-right reading = newest first
+  const numRows = Math.ceil(merged.length / numCols);
+  const columns: NewsItem[][] = Array.from({ length: numCols }, () => []);
+  merged.forEach((item, i) => {
+    const row = Math.floor(i / numCols);
+    const col = i % numCols;
+    // Place item so it appears at the right visual row across all columns
+    columns[col][row] = item;
+  });
+
+  return columns.flat().filter(Boolean);
 }
 
 function loadStored(): NewsItem[] {
@@ -91,7 +108,7 @@ export default function Home() {
   useEffect(() => {
     const stored = loadStored();
     if (stored.length > 0) {
-      setNews(distributeImageCards(stored));
+      setNews(arrangeByRecency(stored));
       setLoading(false);
     }
     // Always fetch fresh on load
@@ -116,7 +133,7 @@ export default function Home() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
       } catch {}
 
-      setNews(distributeImageCards(fresh));
+      setNews(arrangeByRecency(fresh));
       setLastUpdate(new Date().toLocaleString());
     } catch (error) {
       console.error('Error fetching news:', error);
