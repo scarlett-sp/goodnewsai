@@ -9,6 +9,7 @@ interface NewsItem {
   pubDate: string;
   timestamp: number;
   tags: string[];
+  imageUrl?: string;
 }
 
 const RSS_FEEDS = [
@@ -320,6 +321,7 @@ async function searchWithSerper(): Promise<NewsItem[]> {
                 pubDate: item.date ? new Date(item.date).toISOString() : new Date().toISOString(),
                 timestamp: item.date ? new Date(item.date).getTime() : Date.now(),
                 tags: assignTags(item.title, item.snippet),
+                imageUrl: item.image,
               });
             }
           }
