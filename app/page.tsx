@@ -167,9 +167,10 @@ export default function Home() {
             <div className="flex gap-2 w-full sm:w-auto">
               <Link
                 href="/community"
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#86D9C2] to-[#BCEEE8] hover:from-[#A8EFDC] hover:to-[#CFF5F0] text-[#221E1C] font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#C3E3F4] to-[#A8D5F0] hover:from-[#D6EDF8] hover:to-[#BDE3F5] text-[#221E1C] font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
               >
-                🌱 Community
+                <img src="/community-icon.png" alt="Community" className="w-5 h-5" />
+                Community
               </Link>
               <button
                 onClick={() => setSearchOpen(true)}
