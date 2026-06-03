@@ -12,12 +12,13 @@ interface NewsCardProps {
 }
 
 export default function NewsCard({ item }: NewsCardProps) {
-  const date = new Date(item.pubDate);
-  const formattedDate = date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const formattedDate = item.pubDate
+    ? new Date(item.pubDate).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : '';
 
   return (
     <a

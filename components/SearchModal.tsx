@@ -108,7 +108,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     description: item.description,
                     link: item.link,
                     source: item.source,
-                    pubDate: item.pubDate || new Date().toISOString(),
+                    pubDate: item.pubDate || '',
                     tags: item.tags || [],
                   }}
                 />
