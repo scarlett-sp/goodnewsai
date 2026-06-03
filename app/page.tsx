@@ -64,7 +64,7 @@ export default function Home() {
   const doRefresh = async (current: NewsItem[]) => {
     try {
       console.log('Fetching fresh articles...');
-      const response = await fetch('/api/scrape');
+      const response = await fetch('/api/scrape?t=' + Date.now()); // cache-bust
       console.log('Response status:', response.status);
 
       if (!response.ok) {
@@ -73,12 +73,13 @@ export default function Home() {
 
       const fresh: NewsItem[] = await response.json();
       console.log('Fresh articles fetched:', fresh.length);
-      console.log('Current articles:', current.length);
 
-      const merged = mergeAndStore(current, fresh);
-      console.log('Merged articles:', merged.length);
+      // On refresh, prioritize fresh articles and clear old cache
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+      } catch {}
 
-      setNews(merged);
+      setNews(fresh);
       setLastUpdate(new Date().toLocaleString());
     } catch (error) {
       console.error('Error fetching news:', error);
