@@ -52,11 +52,11 @@ export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
       rel="noopener noreferrer"
       className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col"
     >
-      {/* Gradient header for large + medium cards */}
-      {showHeader && (
+      {/* Gradient header only for cards that have an image */}
+      {showHeader && item.imageUrl && (
         <div className={`relative ${headerHeight} bg-gradient-to-br ${accent} flex flex-col justify-between p-4`}>
-          {/* Small image thumbnail in top-left if available */}
-          {item.imageUrl && (
+          {/* Thumbnail top-right, above the source name */}
+          <div className="flex justify-end">
             <div className={`${thumbSize} rounded-lg overflow-hidden shadow-md shrink-0`}>
               <img
                 src={item.imageUrl}
@@ -64,8 +64,8 @@ export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
                 className="w-full h-full object-cover"
               />
             </div>
-          )}
-          {/* Source name at bottom-left */}
+          </div>
+          {/* Source name at bottom-right */}
           <span className="text-[#221E1C]/50 text-xs font-medium uppercase tracking-widest self-end">
             {item.source}
           </span>
@@ -73,9 +73,9 @@ export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
       )}
 
       <div className={`${size === 'small' ? 'p-3' : 'p-4 sm:p-5'} flex flex-col gap-2`}>
-        {/* Source + date — only show source here for small cards (no header) */}
+        {/* Source + date — always show source here if no image header */}
         <div className="flex items-start justify-between gap-2">
-          {size === 'small' ? (
+          {(size === 'small' || !item.imageUrl) ? (
             <span className="inline-block px-2.5 py-1 bg-[#FF8E7E]/15 text-[#FF8E7E] text-xs font-medium rounded-full border border-[#FF8E7E]/30 shrink-0">
               {item.source}
             </span>
