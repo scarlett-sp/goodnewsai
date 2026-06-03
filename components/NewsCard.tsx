@@ -14,15 +14,14 @@ interface NewsCardProps {
   size?: CardSize;
 }
 
-// Pull a soft gradient accent from the palette based on article ID
 function getAccentGradient(id: string): string {
   const gradients = [
-    'from-[#CBB9F0] to-[#DFD0FF]',   // Lilac
-    'from-[#86D9C2] to-[#BCEEE8]',   // Mint
-    'from-[#C3E3F4] to-[#A8D5F0]',   // Sky blue
-    'from-[#FFC96B] to-[#FFD680]',   // Warm yellow
-    'from-[#FFA0B4] to-[#FFB5C5]',   // Pink
-    'from-[#FF8E7E] to-[#FFB89C]',   // Coral
+    'from-[#CBB9F0] to-[#DFD0FF]',
+    'from-[#86D9C2] to-[#BCEEE8]',
+    'from-[#C3E3F4] to-[#A8D5F0]',
+    'from-[#FFC96B] to-[#FFD680]',
+    'from-[#FFA0B4] to-[#FFB5C5]',
+    'from-[#FF8E7E] to-[#FFB89C]',
   ];
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
@@ -42,7 +41,9 @@ export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
     : '';
 
   const accent = getAccentGradient(item.id);
-  const hasVisualHeader = item.imageUrl || size === 'large';
+  const showHeader = size === 'large' || size === 'medium';
+  const headerHeight = size === 'large' ? 'h-36' : 'h-28';
+  const thumbSize = size === 'large' ? 'w-16 h-16' : 'w-12 h-12';
 
   return (
     <a
@@ -51,30 +52,36 @@ export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
       rel="noopener noreferrer"
       className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col"
     >
-      {/* Visual header: real image OR coloured gradient band for large cards */}
-      {item.imageUrl ? (
-        <div className={`relative ${size === 'large' ? 'h-56' : size === 'small' ? 'h-28' : 'h-40'} overflow-hidden`}>
-          <img
-            src={item.imageUrl}
-            alt={item.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#221E1C]/60 to-transparent" />
+      {/* Gradient header for large + medium cards */}
+      {showHeader && (
+        <div className={`relative ${headerHeight} bg-gradient-to-br ${accent} flex flex-col justify-between p-4`}>
+          {/* Small image thumbnail in top-left if available */}
+          {item.imageUrl && (
+            <div className={`${thumbSize} rounded-lg overflow-hidden shadow-md shrink-0`}>
+              <img
+                src={item.imageUrl}
+                alt={item.source}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          {/* Source name at bottom-left */}
+          <span className="text-[#221E1C]/50 text-xs font-medium uppercase tracking-widest self-end">
+            {item.source}
+          </span>
         </div>
-      ) : size === 'large' ? (
-        <div className={`relative h-36 bg-gradient-to-br ${accent} flex items-end p-4`}>
-          <span className="text-[#221E1C]/50 text-xs font-medium uppercase tracking-widest">{item.source}</span>
-        </div>
-      ) : null}
+      )}
 
       <div className={`${size === 'small' ? 'p-3' : 'p-4 sm:p-5'} flex flex-col gap-2`}>
-        {/* Source + date row — skip source if already shown in gradient header */}
+        {/* Source + date — only show source here for small cards (no header) */}
         <div className="flex items-start justify-between gap-2">
-          {size !== 'large' || item.imageUrl ? (
+          {size === 'small' ? (
             <span className="inline-block px-2.5 py-1 bg-[#FF8E7E]/15 text-[#FF8E7E] text-xs font-medium rounded-full border border-[#FF8E7E]/30 shrink-0">
               {item.source}
             </span>
-          ) : <span />}
+          ) : (
+            <span />
+          )}
           <span className="text-xs text-[#221E1C]/60 shrink-0">{formattedDate}</span>
         </div>
 
@@ -83,7 +90,6 @@ export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
           {item.title}
         </h3>
 
-        {/* Hide description on small cards to keep them compact */}
         {size !== 'small' && (
           <p className={`text-xs sm:text-sm text-[#221E1C]/70 ${size === 'large' ? 'line-clamp-6' : 'line-clamp-3'}`}>
             {item.description}
