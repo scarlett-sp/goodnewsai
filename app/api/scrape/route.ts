@@ -219,7 +219,7 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
       const items = parseItems(xml);
 
       let sourceCount = 0;
-      const maxPerSource = 3;
+      const maxPerSource = 5;
       for (const item of items) {
         if (sourceCount >= maxPerSource) break;
         if (isPositiveImpactStory(item.title, item.description)) {
