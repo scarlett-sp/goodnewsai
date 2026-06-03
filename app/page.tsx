@@ -184,7 +184,7 @@ export default function Home() {
                 disabled={refreshing}
                 className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#86D9C2] to-[#BCEEE8] hover:from-[#A8EFDC] hover:to-[#CFF5F0] text-[#221E1C] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 flex-1 sm:flex-none justify-center"
               >
-                {refreshing ? <LoadingSpinner /> : '↻'}
+                {refreshing ? <LoadingSpinner /> : <img src="/refresh-icon.png" alt="" className="w-5 h-5" />}
                 {refreshing ? 'Refreshing...' : 'Refresh'}
               </button>
             </div>

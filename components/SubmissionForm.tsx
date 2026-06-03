@@ -43,7 +43,7 @@ export default function SubmissionForm() {
   if (status === 'success') {
     return (
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-[#86D9C2]/50 p-10 text-center">
-        <div className="text-4xl mb-4">🌱</div>
+        <div className="mb-4"><img src="/celebration-icon.png" alt="" className="w-12 h-12 mx-auto" /></div>
         <h2 className="text-xl font-bold text-[#221E1C] mb-2">Thanks for sharing!</h2>
         <p className="text-sm text-[#221E1C]/70 mb-6">
           Your story has been submitted and will appear in the community feed once it's reviewed.
@@ -109,7 +109,7 @@ export default function SubmissionForm() {
             <img src={preview} alt="Preview" className="max-h-40 rounded-lg object-cover" />
           ) : (
             <>
-              <span className="text-2xl">🖼️</span>
+              <img src="/image-icon.png" alt="" className="w-8 h-8 opacity-40" />
               <span className="text-sm text-[#221E1C]/50">Click to upload an image</span>
             </>
           )}
