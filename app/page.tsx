@@ -152,13 +152,13 @@ export default function Home() {
           </div>
         ) : (
           <div style={{
-            columnCount: 1,
-            columnGap: '1.5rem',
-          }} className="sm:gap-6 md:columns-2 lg:columns-3">
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gridAutoRows: 'auto',
+            gap: '1.5rem',
+          }}>
             {news.map((item) => (
-              <div key={item.id} style={{ breakInside: 'avoid', marginBottom: '1.5rem' }}>
-                <NewsCard item={item} />
-              </div>
+              <NewsCard key={item.id} item={item} />
             ))}
           </div>
         )}

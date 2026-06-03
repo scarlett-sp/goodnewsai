@@ -25,7 +25,7 @@ export default function NewsCard({ item }: NewsCardProps) {
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col h-full"
+      className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col"
     >
       {item.imageUrl && (
         <div className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-[#CABFB6]/20 to-[#6E6660]/30">
