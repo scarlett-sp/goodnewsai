@@ -1,3 +1,5 @@
+type CardSize = 'small' | 'medium' | 'large';
+
 interface NewsCardProps {
   item: {
     id: string;
@@ -9,9 +11,10 @@ interface NewsCardProps {
     imageUrl?: string;
     tags?: string[];
   };
+  size?: CardSize;
 }
 
-export default function NewsCard({ item }: NewsCardProps) {
+export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
   const formattedDate = item.pubDate
     ? new Date(item.pubDate).toLocaleDateString('en-US', {
         month: 'short',
@@ -19,6 +22,12 @@ export default function NewsCard({ item }: NewsCardProps) {
         year: 'numeric',
       })
     : '';
+
+  const imageHeight = size === 'large' ? 'h-56 sm:h-64' : size === 'small' ? 'h-28 sm:h-32' : 'h-40 sm:h-48';
+  const titleClamp = size === 'large' ? 'line-clamp-4' : size === 'small' ? 'line-clamp-2' : 'line-clamp-3';
+  const descClamp = size === 'large' ? 'line-clamp-6' : size === 'small' ? 'line-clamp-2' : 'line-clamp-3';
+  const padding = size === 'small' ? 'p-3 sm:p-4' : 'p-4 sm:p-5';
+  const titleSize = size === 'large' ? 'text-base sm:text-lg' : 'text-sm sm:text-base';
 
   return (
     <a
@@ -28,7 +37,7 @@ export default function NewsCard({ item }: NewsCardProps) {
       className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col"
     >
       {item.imageUrl && (
-        <div className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-[#CABFB6]/20 to-[#6E6660]/30">
+        <div className={`relative ${imageHeight} overflow-hidden bg-gradient-to-br from-[#CABFB6]/20 to-[#6E6660]/30`}>
           <img
             src={item.imageUrl}
             alt={item.title}
@@ -38,7 +47,7 @@ export default function NewsCard({ item }: NewsCardProps) {
         </div>
       )}
 
-      <div className="flex-1 p-4 sm:p-5 flex flex-col">
+      <div className={`flex-1 ${padding} flex flex-col`}>
         <div className="flex items-start justify-between gap-2 mb-2">
           <span className="inline-block px-2.5 py-1 bg-[#FF8E7E]/15 text-[#FF8E7E] text-xs font-medium rounded-full border border-[#FF8E7E]/30">
             {item.source}
@@ -48,11 +57,11 @@ export default function NewsCard({ item }: NewsCardProps) {
           </span>
         </div>
 
-        <h3 className="text-sm sm:text-base font-semibold text-[#221E1C] group-hover:text-[#FF8E7E] transition-colors line-clamp-3 mb-2">
+        <h3 className={`${titleSize} font-semibold text-[#221E1C] group-hover:text-[#FF8E7E] transition-colors ${titleClamp} mb-2`}>
           {item.title}
         </h3>
 
-        <p className="text-xs sm:text-sm text-[#221E1C]/70 line-clamp-3 flex-grow">
+        <p className={`text-xs sm:text-sm text-[#221E1C]/70 ${descClamp} flex-grow`}>
           {item.description}
         </p>
 

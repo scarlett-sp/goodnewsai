@@ -19,6 +19,17 @@ interface NewsItem {
 const STORAGE_KEY = 'goodnewsai_items';
 const SIX_MONTHS = 180 * 24 * 60 * 60 * 1000;
 
+// Deterministically assign a card size from the article ID so layout is stable across re-renders
+function getCardSize(id: string): 'small' | 'medium' | 'large' {
+  const sizes = ['small', 'medium', 'large', 'small', 'medium'] as const; // weighted toward small/medium
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = ((hash << 5) - hash) + id.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return sizes[Math.abs(hash) % sizes.length];
+}
+
 function loadStored(): NewsItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -154,7 +165,7 @@ export default function Home() {
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
             {news.map((item) => (
               <div key={item.id} className="break-inside-avoid mb-6">
-                <NewsCard item={item} />
+                <NewsCard item={item} size={getCardSize(item.id)} />
               </div>
             ))}
           </div>
