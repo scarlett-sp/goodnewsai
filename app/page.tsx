@@ -151,14 +151,11 @@ export default function Home() {
             <p className="text-[#221E1C]">No stories yet. Click refresh to get started.</p>
           </div>
         ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gridAutoRows: 'auto',
-            gap: '1.5rem',
-          }}>
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
             {news.map((item) => (
-              <NewsCard key={item.id} item={item} />
+              <div key={item.id} className="break-inside-avoid mb-6">
+                <NewsCard item={item} />
+              </div>
             ))}
           </div>
         )}
