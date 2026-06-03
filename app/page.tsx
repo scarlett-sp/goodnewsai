@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import NewsCard from '@/components/NewsCard';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import SearchModal from '@/components/SearchModal';
@@ -164,6 +165,12 @@ export default function Home() {
               className="h-14 sm:h-16 w-auto"
             />
             <div className="flex gap-2 w-full sm:w-auto">
+              <Link
+                href="/community"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#86D9C2] to-[#BCEEE8] hover:from-[#A8EFDC] hover:to-[#CFF5F0] text-[#221E1C] font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
+              >
+                🌱 Community
+              </Link>
               <button
                 onClick={() => setSearchOpen(true)}
                 className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#CBB9F0] to-[#DFD0FF] hover:from-[#DFD0FF] hover:to-[#EFE1FF] text-[#221E1C] font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
