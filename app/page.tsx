@@ -100,7 +100,8 @@ export default function Home() {
                 onClick={() => setSearchOpen(true)}
                 className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#CBB9F0] to-[#DFD0FF] hover:from-[#DFD0FF] hover:to-[#EFE1FF] text-[#221E1C] font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
               >
-                🔍 Search
+                <img src="/search-icon.png" alt="Search" className="w-5 h-5" />
+                Search
               </button>
               <button
                 onClick={handleRefresh}
