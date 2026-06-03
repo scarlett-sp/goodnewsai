@@ -73,7 +73,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               disabled={loading}
               className="px-6 py-2 bg-gradient-to-r from-[#CBB9F0] to-[#DFD0FF] hover:from-[#DFD0FF] hover:to-[#EFE1FF] text-[#221E1C] font-medium rounded-lg transition-all disabled:opacity-50 flex items-center gap-2"
             >
-              {loading ? '...' : <img src="/search-icon.svg" alt="Search" className="w-5 h-5" />}
+              {loading ? '...' : <img src="/search-icon.png" alt="Search" className="w-5 h-5" />}
               {!loading && 'Search'}
             </button>
           </form>
