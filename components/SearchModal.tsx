@@ -71,7 +71,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-gradient-to-r from-[#5BA8E8] to-[#FF8570] hover:from-[#6CB9F0] hover:to-[#FF9E8A] text-white font-medium rounded-lg transition-all disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-gradient-to-r from-[#CBB9F0] to-[#DFD0FF] hover:from-[#DFD0FF] hover:to-[#EFE1FF] text-white font-medium rounded-lg transition-all disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? '...' : '🔍 Search'}
             </button>

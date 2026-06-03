@@ -98,14 +98,14 @@ export default function Home() {
             <div className="flex gap-2 w-full sm:w-auto">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#5BA8E8] to-[#FF8570] hover:from-[#6CB9F0] hover:to-[#FF9E8A] text-white font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#CBB9F0] to-[#DFD0FF] hover:from-[#DFD0FF] hover:to-[#EFE1FF] text-white font-medium transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center"
               >
                 🔍 Search
               </button>
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#E85A80] to-[#D84872] hover:from-[#FF7A9C] hover:to-[#E8688A] text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 flex-1 sm:flex-none justify-center"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#86D9C2] to-[#BCEEE8] hover:from-[#A8EFDC] hover:to-[#CFF5F0] text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 flex-1 sm:flex-none justify-center"
               >
                 {refreshing ? <LoadingSpinner /> : '↻'}
                 {refreshing ? 'Refreshing...' : 'Refresh'}
