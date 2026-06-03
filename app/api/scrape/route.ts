@@ -26,6 +26,20 @@ const RSS_FEEDS = [
 
   // Science news
   { name: 'Nature', url: 'https://www.nature.com/nplants/rss/current.xml' },
+
+  // Environment & sustainability
+  { name: 'Carbon Brief', url: 'https://www.carbonbrief.org/feed/' },
+  { name: 'Inside Climate News', url: 'https://insideclimatenews.org/feed/' },
+
+  // Social impact & community
+  { name: 'Nonprofit Tech for Good', url: 'https://www.nptechforgood.com/feed/' },
+  { name: 'Global Citizen', url: 'https://www.globalcitizen.org/feed/' },
+
+  // Education
+  { name: 'EdSurge', url: 'https://www.edsurge.com/feed' },
+
+  // Health & wellness
+  { name: 'STAT News', url: 'https://www.statnews.com/feed/' },
 ];
 
 const IMPACT_KEYWORDS = [
@@ -75,9 +89,18 @@ const NEGATIVE_KEYWORDS = [
   'venture capital raises', 'venture capital invests', 'startup raises', 'funding round',
   'raised funding', 'secures funding', 'series a', 'series b', 'series c',
 
+  // Tech CEOs, Silicon Valley, company news
+  'elon', 'musk', 'sam altman', 'silicon valley', 'tech ceo', 'tech founder',
+  'startup founder', 'tech executive', 'company announces', 'tech company',
+
+  // Stocks & financial news
+  'stock', 'stocks', 'ipo', 'sec filing', 'investor', 'investment',
+  'valuation', 'market cap', 'profitable', 'revenue', 'earnings',
+
   // Product launches & gadgets - expanded
   'product launch', 'launches new', 'new gadget', 'announces', 'releases new',
-  'unveiled', 'introducing', 'pendant', 'wearable gadget',
+  'unveiled', 'introducing', 'pendant', 'wearable gadget', 'new phone',
+  'new device', 'product announcement',
 
   // Model releases & tech company news
   'model release', 'model launch', 'new model', 'introduces model', 'announces model',
@@ -219,7 +242,7 @@ async function scrapeRSSFeeds(): Promise<NewsItem[]> {
       const items = parseItems(xml);
 
       let sourceCount = 0;
-      const maxPerSource = 5;
+      const maxPerSource = 1;
       for (const item of items) {
         if (sourceCount >= maxPerSource) break;
         if (isPositiveImpactStory(item.title, item.description)) {
