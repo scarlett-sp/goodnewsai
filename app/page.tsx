@@ -31,6 +31,32 @@ function getCardSize(index: number): 'small' | 'medium' | 'large' {
   return SIZE_SEQUENCE[index % SIZE_SEQUENCE.length];
 }
 
+// Spread image cards evenly through the list so every column gets some
+function distributeImageCards(items: NewsItem[]): NewsItem[] {
+  const withImage = items.filter(i => i.imageUrl);
+  const withoutImage = items.filter(i => !i.imageUrl);
+  if (withImage.length === 0) return items;
+
+  const result: NewsItem[] = [];
+  // Space image cards roughly every N positions
+  const spacing = Math.max(2, Math.floor(items.length / withImage.length));
+  let imageIndex = 0;
+
+  for (let i = 0; i < items.length; i++) {
+    if (imageIndex < withImage.length && i % spacing === 0) {
+      result.push(withImage[imageIndex++]);
+    } else {
+      const next = withoutImage.shift();
+      if (next) result.push(next);
+    }
+  }
+  // Append any remaining items
+  while (imageIndex < withImage.length) result.push(withImage[imageIndex++]);
+  withoutImage.forEach(i => result.push(i));
+
+  return result;
+}
+
 function loadStored(): NewsItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -66,7 +92,7 @@ export default function Home() {
   useEffect(() => {
     const stored = loadStored();
     if (stored.length > 0) {
-      setNews(stored);
+      setNews(distributeImageCards(stored));
       setLoading(false);
     }
     // Always fetch fresh on load
@@ -91,7 +117,7 @@ export default function Home() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
       } catch {}
 
-      setNews(fresh);
+      setNews(distributeImageCards(fresh));
       setLastUpdate(new Date().toLocaleString());
     } catch (error) {
       console.error('Error fetching news:', error);
