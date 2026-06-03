@@ -19,15 +19,15 @@ interface NewsItem {
 const STORAGE_KEY = 'goodnewsai_items';
 const SIX_MONTHS = 180 * 24 * 60 * 60 * 1000;
 
-// Deterministically assign a card size from the article ID so layout is stable across re-renders
-function getCardSize(id: string): 'small' | 'medium' | 'large' {
-  const sizes = ['small', 'medium', 'large', 'small', 'medium'] as const; // weighted toward small/medium
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = ((hash << 5) - hash) + id.charCodeAt(i);
-    hash = hash & hash;
-  }
-  return sizes[Math.abs(hash) % sizes.length];
+// A varied sequence that guarantees a mix of sizes across the grid
+const SIZE_SEQUENCE = [
+  'large', 'small', 'medium', 'small', 'large', 'medium',
+  'small', 'medium', 'small', 'large', 'small', 'medium',
+  'medium', 'large', 'small', 'medium', 'small', 'large',
+] as const;
+
+function getCardSize(index: number): 'small' | 'medium' | 'large' {
+  return SIZE_SEQUENCE[index % SIZE_SEQUENCE.length];
 }
 
 function loadStored(): NewsItem[] {
@@ -163,9 +163,9 @@ export default function Home() {
           </div>
         ) : (
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
-            {news.map((item) => (
+            {news.map((item, index) => (
               <div key={item.id} className="break-inside-avoid mb-6">
-                <NewsCard item={item} size={getCardSize(item.id)} />
+                <NewsCard item={item} size={getCardSize(index)} />
               </div>
             ))}
           </div>
