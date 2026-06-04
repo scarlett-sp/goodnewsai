@@ -30,7 +30,7 @@ export default function CommunityPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#C3E3F4] via-[#FF8E7E] to-[#FFA0B4]">
+    <main className="min-h-screen bg-gradient-to-br from-[#C3E3F4] via-[#FF8E7E] to-[#FFA0B4] flex flex-col">
       {/* Header */}
       <div className="border-b border-[#FF8E7E]/20 backdrop-blur-md bg-white/10 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between">
@@ -60,7 +60,7 @@ export default function CommunityPage() {
           </div>
         ) : submissions.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-3xl mb-4">🌱</p>
+            <img src="/community-icon.png" alt="" className="w-12 h-12 mx-auto mb-4" />
             <p className="text-[#221E1C]/70 mb-6">No stories yet — be the first to share one!</p>
             <Link
               href="/community/submit"
@@ -76,6 +76,13 @@ export default function CommunityPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Discreet admin link */}
+      <div className="flex-1 flex items-end justify-center pb-6">
+        <Link href="/admin" className="text-xs text-[#221E1C]/20 hover:text-[#221E1C]/40 transition-colors">
+          Admin
+        </Link>
       </div>
     </main>
   );

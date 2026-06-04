@@ -102,16 +102,18 @@ export default function AdminCard({ item, onUpdate }: AdminCardProps) {
           <button
             onClick={() => update('approved')}
             disabled={saving || item.status === 'approved'}
-            className="flex-1 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-all disabled:opacity-40"
+            className="flex-1 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
           >
-            ✓ Approve
+            <img src="/check-icon.png" alt="" className="w-4 h-4 brightness-0 invert" />
+            Approve
           </button>
           <button
             onClick={() => update('rejected')}
             disabled={saving || item.status === 'rejected'}
-            className="flex-1 py-2 rounded-lg bg-red-400 hover:bg-red-500 text-white text-sm font-medium transition-all disabled:opacity-40"
+            className="flex-1 py-2 rounded-lg bg-red-400 hover:bg-red-500 text-white text-sm font-medium transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
           >
-            ✕ Reject
+            <img src="/x-icon.png" alt="" className="w-4 h-4 brightness-0 invert" />
+            Reject
           </button>
           <button
             onClick={() => update()}

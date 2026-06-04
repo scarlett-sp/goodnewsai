@@ -55,21 +55,24 @@ export default function AdminReviewPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <main className="min-h-screen" style={{ background: 'linear-gradient(135deg, #CBB9F0 0%, #C3E3F4 33%, #3FA8F0 66%, #FF8E7E 100%)' }}>
+      <header className="border-b border-white/20 backdrop-blur-md bg-white/10 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="Good News AI" className="h-9 w-auto" />
-            <span className="text-sm font-medium text-gray-500">Admin</span>
+            <span className="text-sm font-medium text-[#221E1C]/60">Admin</span>
           </div>
-          <button onClick={handleLogout} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-            Log out
-          </button>
+          <div className="flex items-center gap-4">
+            <a href="/community" className="text-sm text-[#221E1C]/50 hover:text-[#221E1C]/80 transition-colors">← Community</a>
+            <button onClick={handleLogout} className="text-sm text-[#221E1C]/50 hover:text-[#221E1C]/80 transition-colors">
+              Log out
+            </button>
+          </div>
         </div>
       </header>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Community Submissions</h1>
+        <h1 className="text-2xl font-bold text-[#221E1C] mb-6">Community Submissions</h1>
 
         {/* Filter tabs */}
         <div className="flex gap-2 mb-8 flex-wrap">
@@ -91,7 +94,7 @@ export default function AdminReviewPage() {
         {loading ? (
           <p className="text-gray-400 text-center py-20">Loading submissions...</p>
         ) : filtered.length === 0 ? (
-          <p className="text-gray-400 text-center py-20">No {filter === 'all' ? '' : filter} submissions.</p>
+          <p className="text-[#221E1C]/50 text-center py-20">No {filter === 'all' ? '' : filter} submissions.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map(item => (

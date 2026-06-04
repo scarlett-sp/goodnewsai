@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
@@ -34,6 +35,7 @@ export default function AdminLoginPage() {
         <div className="text-center mb-8">
           <img src="/logo.png" alt="Good News AI" className="h-12 w-auto mx-auto mb-4" />
           <h1 className="text-xl font-bold text-[#221E1C]">Admin Login</h1>
+          <Link href="/community" className="text-xs text-[#221E1C]/40 hover:text-[#221E1C]/70 transition-colors mt-1 inline-block">← Back to community</Link>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
