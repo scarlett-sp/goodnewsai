@@ -24,7 +24,7 @@ const isClickable = (element: Element): boolean => {
   }
   if (element.hasAttribute('role')) {
     const role = element.getAttribute('role');
-    if (['button', 'link', 'menuitem', 'tab'].includes(role)) {
+    if (role && ['button', 'link', 'menuitem', 'tab'].includes(role)) {
       return true;
     }
   }
