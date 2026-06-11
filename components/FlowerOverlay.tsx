@@ -68,7 +68,7 @@ export default function FlowerOverlay() {
       // Remove flower after animation completes (1.2s)
       setTimeout(() => {
         setFlowers(prev => prev.filter(f => f.id !== id));
-      }, 1200);
+      }, 1800);
     };
 
     document.addEventListener('click', handleClick);
@@ -82,11 +82,11 @@ export default function FlowerOverlay() {
           key={flower.id}
           src={`/${FLOWER_TYPES[flower.type]}`}
           alt=""
-          className="absolute w-16 h-16 animate-flower"
+          className="absolute w-16 h-16"
           style={{
             left: `${flower.x}px`,
             top: `${flower.y}px`,
-            transform: 'translate(-50%, -50%)',
+            animation: 'flower-bloom 1.8s ease-out forwards',
           }}
         />
       ))}

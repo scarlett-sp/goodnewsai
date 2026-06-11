@@ -27,17 +27,18 @@ body {
 
 @keyframes flower-bloom {
   0% {
-    transform: translate(-50%, -50%) scale(0);
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  60% {
     opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(1) rotate(540deg);
     opacity: 0;
   }
 }
 
-@layer utilities {
-  .animate-flower {
-    animation: flower-bloom 1.2s ease-out forwards;
-  }
+.animate-flower {
+  animation: flower-bloom 1.2s ease-out forwards;
 }
