@@ -216,7 +216,26 @@ export default function Home() {
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
             {news.map((item, index) => (
               <div key={item.id} className="break-inside-avoid mb-6">
-                <NewsCard item={item} size={getCardSize(index)} />
+                <NewsCard
+                  item={item}
+                  size={getCardSize(index)}
+                  onFlag={async () => {
+                    // Remove the flagged article
+                    const remaining = news.filter(n => n.id !== item.id);
+                    setNews(remaining);
+                    // Fetch a replacement
+                    try {
+                      const excluded = remaining.map(n => n.link).join(',');
+                      const res = await fetch(`/api/articles/replacement?excluded=${encodeURIComponent(excluded)}`);
+                      if (res.ok) {
+                        const replacement = await res.json();
+                        if (replacement) {
+                          setNews(prev => [...prev, replacement]);
+                        }
+                      }
+                    } catch {}
+                  }}
+                />
               </div>
             ))}
           </div>

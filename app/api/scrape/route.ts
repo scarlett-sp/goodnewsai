@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 interface NewsItem {
   id: string;
@@ -344,14 +345,20 @@ async function searchWithSerper(): Promise<NewsItem[]> {
 
 export async function GET() {
   try {
-    const [rssResults, serperResults] = await Promise.all([
+    const [rssResults, serperResults, blockedData] = await Promise.all([
       scrapeRSSFeeds(),
       searchWithSerper(),
+      getSupabaseAdmin().from('blocked_articles').select('article_link'),
     ]);
+
+    const blockedLinks = new Set(
+      (blockedData.data ?? []).map((b: { article_link: string }) => b.article_link)
+    );
 
     const allResults = [...rssResults, ...serperResults];
     const unique = Array.from(new Map(allResults.map(item => [item.id, item])).values());
-    const sorted = unique.sort((a, b) => b.timestamp - a.timestamp);
+    const filtered = unique.filter(item => !blockedLinks.has(item.link));
+    const sorted = filtered.sort((a, b) => b.timestamp - a.timestamp);
 
     return NextResponse.json(sorted);
   } catch (error) {

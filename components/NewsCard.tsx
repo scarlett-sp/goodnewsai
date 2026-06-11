@@ -1,3 +1,7 @@
+'use client';
+
+import FlagButton from './FlagButton';
+
 type CardSize = 'small' | 'medium' | 'large';
 
 interface NewsCardProps {
@@ -12,6 +16,7 @@ interface NewsCardProps {
     tags?: string[];
   };
   size?: CardSize;
+  onFlag?: () => void;
 }
 
 function getAccentGradient(id: string): string {
@@ -31,7 +36,7 @@ function getAccentGradient(id: string): string {
   return gradients[Math.abs(hash) % gradients.length];
 }
 
-export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
+export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProps) {
   const formattedDate = item.pubDate
     ? new Date(item.pubDate).toLocaleDateString('en-US', {
         month: 'short',
@@ -106,11 +111,19 @@ export default function NewsCard({ item, size = 'medium' }: NewsCardProps) {
           </div>
         )}
 
-        <div className="mt-1 pt-2 border-t border-[#FFB89C]/20 flex items-center gap-1 text-[#FF8E7E] group-hover:text-[#FFA0B4] text-xs font-medium">
-          Read more
-          <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+        <div className="mt-1 pt-2 border-t border-[#FFB89C]/20 flex items-center justify-between">
+          <div className="flex items-center gap-1 text-[#FF8E7E] group-hover:text-[#FFA0B4] text-xs font-medium">
+            Read more
+            <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          {onFlag && (
+            <FlagButton
+              article={{ id: item.id, title: item.title, link: item.link, source: item.source }}
+              onFlagged={onFlag}
+            />
+          )}
         </div>
       </div>
     </a>
