@@ -343,19 +343,89 @@ async function searchWithSerper(): Promise<NewsItem[]> {
   }
 }
 
+async function getLikeBasedQueries(): Promise<string[]> {
+  try {
+    const { data: likes } = await getSupabaseAdmin()
+      .from('article_likes')
+      .select('article_title, article_tags')
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (!likes || likes.length === 0) return [];
+
+    // Collect tags from liked articles
+    const tagCounts = new Map<string, number>();
+    for (const like of likes) {
+      for (const tag of like.article_tags ?? []) {
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+      }
+    }
+
+    // Top 3 most-liked tags become extra search queries
+    const topTags = Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([tag]) => `AI ${tag.toLowerCase()} positive impact good news`);
+
+    return topTags;
+  } catch {
+    return [];
+  }
+}
+
 export async function GET() {
   try {
-    const [rssResults, serperResults, blockedData] = await Promise.all([
+    const [rssResults, serperResults, blockedData, likeQueries] = await Promise.all([
       scrapeRSSFeeds(),
       searchWithSerper(),
       getSupabaseAdmin().from('blocked_articles').select('article_link'),
+      getLikeBasedQueries(),
     ]);
+
+    // Run extra like-based searches if we have them
+    let likeResults: NewsItem[] = [];
+    if (likeQueries.length > 0) {
+      const apiKey = process.env.SERPER_API_KEY;
+      if (apiKey) {
+        const likeSearches = await Promise.all(
+          likeQueries.map(async (q) => {
+            try {
+              const res = await fetch('https://google.serper.dev/search', {
+                method: 'POST',
+                headers: { 'X-API-KEY': apiKey, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ q, num: 5, type: 'news' }),
+              });
+              if (!res.ok) return [];
+              const data = await res.json();
+              return (data.news ?? [])
+                .filter((item: { title: string; snippet?: string }) =>
+                  isPositiveImpactStory(item.title, item.snippet)
+                )
+                .map((item: { link: string; title: string; snippet?: string; date?: string; imageUrl?: string; image?: string }) => ({
+                  id: `serper::like::${item.link}`,
+                  title: item.title.substring(0, 150),
+                  description: (item.snippet ?? '').substring(0, 300),
+                  link: item.link,
+                  source: new URL(item.link).hostname,
+                  pubDate: item.date ? new Date(item.date).toISOString() : new Date().toISOString(),
+                  timestamp: item.date ? new Date(item.date).getTime() : Date.now(),
+                  tags: assignTags(item.title, item.snippet ?? ''),
+                  imageUrl: item.imageUrl || item.image || undefined,
+                }));
+            } catch {
+              return [];
+            }
+          })
+        );
+        likeResults = likeSearches.flat();
+      }
+    }
 
     const blockedLinks = new Set(
       (blockedData.data ?? []).map((b: { article_link: string }) => b.article_link)
     );
 
-    const allResults = [...rssResults, ...serperResults];
+    const allResults = [...rssResults, ...serperResults, ...likeResults];
     const unique = Array.from(new Map(allResults.map(item => [item.id, item])).values());
     const filtered = unique.filter(item => !blockedLinks.has(item.link));
     const sorted = filtered.sort((a, b) => b.timestamp - a.timestamp);

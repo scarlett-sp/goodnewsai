@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import FlagButton from './FlagButton';
+import ThumbsUpButton from './ThumbsUpButton';
 
 type CardSize = 'small' | 'medium' | 'large';
 
@@ -131,13 +132,16 @@ export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProp
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>
-          {onFlag && (
-            <FlagButton
-              article={{ id: item.id, title: item.title, link: item.link, source: item.source }}
-              onFlagged={onFlag}
-              onOpenChange={handleFlagOpenChange}
-            />
-          )}
+          <div className="flex items-center gap-2">
+            <ThumbsUpButton article={{ id: item.id, title: item.title, link: item.link, source: item.source, tags: item.tags }} />
+            {onFlag && (
+              <FlagButton
+                article={{ id: item.id, title: item.title, link: item.link, source: item.source }}
+                onFlagged={onFlag}
+                onOpenChange={handleFlagOpenChange}
+              />
+            )}
+          </div>
         </div>
       </div>
     </a>
