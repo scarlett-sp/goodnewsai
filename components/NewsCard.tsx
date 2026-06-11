@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef, useState } from 'react';
 import FlagButton from './FlagButton';
 import ThumbsUpButton from './ThumbsUpButton';
 
@@ -39,17 +38,6 @@ function getAccentGradient(id: string): string {
 }
 
 export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProps) {
-  const [linkBlocked, setLinkBlocked] = useState(false);
-  const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleFlagOpenChange = (open: boolean) => {
-    if (open) {
-      setLinkBlocked(true);
-      if (cooldownRef.current) clearTimeout(cooldownRef.current);
-    } else {
-      cooldownRef.current = setTimeout(() => setLinkBlocked(false), 500);
-    }
-  };
   const formattedDate = item.pubDate
     ? new Date(item.pubDate).toLocaleDateString('en-US', {
         month: 'short',
@@ -64,38 +52,30 @@ export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProp
   const thumbSize = size === 'large' ? 'w-16 h-16' : 'w-12 h-12';
 
   return (
-    <a
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={(e) => { if (linkBlocked) e.preventDefault(); }}
-      className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col"
+    // Outer div navigates on click — buttons below stop propagation so they're fully isolated
+    <div
+      onClick={() => window.open(item.link, '_blank', 'noopener,noreferrer')}
+      className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col cursor-pointer"
     >
-      {/* Gradient header only for cards that have an image */}
+      {/* Gradient header — only for medium/large cards with an image */}
       {showHeader && item.imageUrl && (
         <div className={`relative ${headerHeight} bg-gradient-to-br ${accent} flex flex-col justify-between p-4`}>
-          {/* Thumbnail top-right, above the source name */}
           <div className="flex justify-end">
             <div className={`${thumbSize} rounded-lg overflow-hidden shadow-md shrink-0`}>
-              <img
-                src={item.imageUrl}
-                alt={item.source}
-                className="w-full h-full object-cover"
-              />
+              <img src={item.imageUrl} alt={item.source} className="w-full h-full object-cover" />
             </div>
           </div>
-          {/* Source name at bottom-right */}
           <span className="text-[#221E1C]/50 text-xs font-medium uppercase tracking-widest self-end">
             {item.source}
           </span>
         </div>
       )}
 
-      <div className={`${size === 'small' ? 'p-3' : 'p-4 sm:p-5'} flex flex-col gap-2`}>
-        {/* Source + date — always show source here if no image header */}
+      <div className={`${size === 'small' ? 'p-3' : 'p-4 sm:p-5'} flex flex-col gap-2 flex-1`}>
+        {/* Source + date */}
         <div className="flex items-start justify-between gap-2">
           {(size === 'small' || !item.imageUrl) ? (
-            <span className="inline-block px-2.5 py-1 bg-[#FF8E7E]/15 text-[#FF8E7E] text-xs font-medium rounded-full border border-[#FF8E7E]/30 shrink-0">
+            <span className="inline-block px-2.5 py-1 bg-[#FF8E7E]/15 text-[#FF8E7E] text-xs font-medium rounded-full border border-[#FF8E7E]/30 shrink-0 truncate max-w-[60%]">
               {item.source}
             </span>
           ) : (
@@ -125,25 +105,38 @@ export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProp
           </div>
         )}
 
-        <div className="mt-1 pt-2 border-t border-[#FFB89C]/20 flex items-center justify-between">
-          <div className="flex items-center gap-1 text-[#FF8E7E] group-hover:text-[#FFA0B4] text-xs font-medium">
-            Read more
-            <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThumbsUpButton article={{ id: item.id, title: item.title, link: item.link, source: item.source, tags: item.tags }} />
+        {/*
+          Bottom bar — stopPropagation on the whole row so NO click here
+          can ever bubble up and open the article link accidentally.
+        */}
+        <div
+          className="mt-auto pt-2 border-t border-[#FFB89C]/20 flex items-center justify-between"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* "Read more" — hidden on small cards to save space */}
+          {size !== 'small' && (
+            <div className="flex items-center gap-1 text-[#FF8E7E] group-hover:text-[#FFA0B4] text-xs font-medium pointer-events-none">
+              Read more
+              <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          )}
+
+          {/* Buttons — always visible, right-aligned on small cards */}
+          <div className={`flex items-center gap-2 ${size === 'small' ? 'ml-auto' : ''}`}>
+            <ThumbsUpButton
+              article={{ id: item.id, title: item.title, link: item.link, source: item.source, tags: item.tags }}
+            />
             {onFlag && (
               <FlagButton
                 article={{ id: item.id, title: item.title, link: item.link, source: item.source }}
                 onFlagged={onFlag}
-                onOpenChange={handleFlagOpenChange}
               />
             )}
           </div>
         </div>
       </div>
-    </a>
+    </div>
   );
 }
