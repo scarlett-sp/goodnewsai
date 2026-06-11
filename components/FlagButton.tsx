@@ -10,6 +10,7 @@ interface FlagButtonProps {
     source: string;
   };
   onFlagged: () => void;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const REASONS = [
@@ -19,8 +20,13 @@ const REASONS = [
   { key: 'other', label: 'Other' },
 ];
 
-export default function FlagButton({ article, onFlagged }: FlagButtonProps) {
+export default function FlagButton({ article, onFlagged, onOpenChange }: FlagButtonProps) {
   const [open, setOpen] = useState(false);
+
+  const setOpenWithCallback = (value: boolean) => {
+    setOpen(value);
+    onOpenChange?.(value);
+  };
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -39,7 +45,7 @@ export default function FlagButton({ article, onFlagged }: FlagButtonProps) {
     setDone(true);
     setSubmitting(false);
     setTimeout(() => {
-      setOpen(false);
+      setOpenWithCallback(false);
       onFlagged();
     }, 700);
   };
@@ -47,7 +53,7 @@ export default function FlagButton({ article, onFlagged }: FlagButtonProps) {
   return (
     <>
       <button
-        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(true); }}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpenWithCallback(true); }}
         className="text-[#221E1C]/20 hover:text-[#FF8E7E] transition-colors p-0.5 rounded"
         title="Flag this article"
         aria-label="Flag article"
@@ -61,7 +67,7 @@ export default function FlagButton({ article, onFlagged }: FlagButtonProps) {
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
-          onClick={() => !submitting && setOpen(false)}
+          onClick={() => !submitting && setOpenWithCallback(false)}
         >
           <div
             className="bg-white rounded-2xl shadow-xl p-6 max-w-xs w-full mx-4 border border-[#FFB89C]/30"
@@ -90,7 +96,7 @@ export default function FlagButton({ article, onFlagged }: FlagButtonProps) {
                   ))}
                 </div>
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={() => setOpenWithCallback(false)}
                   className="mt-4 text-xs text-[#221E1C]/30 hover:text-[#221E1C]/60 w-full text-center transition-colors"
                 >
                   Cancel

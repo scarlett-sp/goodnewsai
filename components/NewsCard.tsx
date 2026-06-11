@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import FlagButton from './FlagButton';
 
 type CardSize = 'small' | 'medium' | 'large';
@@ -37,6 +38,17 @@ function getAccentGradient(id: string): string {
 }
 
 export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProps) {
+  const [linkBlocked, setLinkBlocked] = useState(false);
+  const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleFlagOpenChange = (open: boolean) => {
+    if (open) {
+      setLinkBlocked(true);
+      if (cooldownRef.current) clearTimeout(cooldownRef.current);
+    } else {
+      cooldownRef.current = setTimeout(() => setLinkBlocked(false), 500);
+    }
+  };
   const formattedDate = item.pubDate
     ? new Date(item.pubDate).toLocaleDateString('en-US', {
         month: 'short',
@@ -55,6 +67,7 @@ export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProp
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={(e) => { if (linkBlocked) e.preventDefault(); }}
       className="group rounded-xl bg-white/80 backdrop-blur-sm border border-[#FFB89C]/30 hover:border-[#FF8E7E] transition-all duration-300 overflow-hidden hover:shadow-lg hover:shadow-[#FF8E7E]/20 flex flex-col"
     >
       {/* Gradient header only for cards that have an image */}
@@ -122,6 +135,7 @@ export default function NewsCard({ item, size = 'medium', onFlag }: NewsCardProp
             <FlagButton
               article={{ id: item.id, title: item.title, link: item.link, source: item.source }}
               onFlagged={onFlag}
+              onOpenChange={handleFlagOpenChange}
             />
           )}
         </div>
