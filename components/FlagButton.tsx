@@ -47,7 +47,7 @@ export default function FlagButton({ article, onFlagged, onOpenChange }: FlagBut
     setTimeout(() => {
       setOpenWithCallback(false);
       onFlagged();
-    }, 700);
+    }, 4000);
   };
 
   return (
@@ -75,7 +75,7 @@ export default function FlagButton({ article, onFlagged, onOpenChange }: FlagBut
           >
             {done ? (
               <div className="text-center py-3">
-                <p className="text-2xl mb-2">🙏</p>
+                <img src="/celebration-icon.png" alt="" className="w-12 h-12 mx-auto mb-3" />
                 <p className="text-sm font-semibold text-[#221E1C]">Thanks for the feedback!</p>
                 <p className="text-xs text-[#221E1C]/50 mt-1">We'll use this to improve the feed.</p>
               </div>
